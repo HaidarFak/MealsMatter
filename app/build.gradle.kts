@@ -52,5 +52,6 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    implementation("com.applandeo:material-calendar-view:1.9.0")
+    implementation ("androidx.appcompat:appcompat:1.3.1")  // or latest version
+    implementation ("com.applandeo:material-calendar-view:1.5.0")  // for CalendarView
 }
