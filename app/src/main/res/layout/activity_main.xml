@@ -40,11 +40,17 @@
         <com.applandeo.materialcalendarview.CalendarView
             android:id="@+id/calendarView"
             android:layout_width="match_parent"
-            android:layout_height="419dp"
+            android:layout_height="386dp"
             app:headerColor="@color/purple_500"
             app:selectionColor="@color/teal_200"
             app:todayLabelColor="@color/purple_700" />
 
     </LinearLayout>
+
+
+
+
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

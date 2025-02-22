@@ -17,8 +17,8 @@
         android:title="@string/title_notifications" />
 
     <item
-        android:id="@+id/navigation_Calander"
-        android:icon="@drawable/ic_notifications_black_24dp"
+        android:id="@+id/navigation_Calender"
+        android:icon="@android:drawable/btn_dialog"
         android:title="Calander" />
 
 </menu>
