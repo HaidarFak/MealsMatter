@@ -10,7 +10,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.mealsmatter.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
-
+    
     private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,4 +32,7 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
     }
-} // Whats up
+
+
+}
+
