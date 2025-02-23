@@ -9,4 +9,13 @@
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
 
+        <color name="primaryColor">#6200EE</color>
+        <color name="primaryLightColor">#BB86FC</color>
+        <color name="primaryDarkColor">#3700B3</color>
+        <color name="secondaryColor">#03DAC5</color>
+        <color name="secondaryLightColor">#67E8F9</color>
+        <color name="secondaryDarkColor">#018786</color>
+        <color name="backgroundColor">#FFFFFF</color>
+        <color name="textColorPrimary">#000000</color>
+        <color name="textColorSecondary">#757575</color>
 </resources>

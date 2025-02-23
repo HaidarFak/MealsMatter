@@ -26,6 +26,7 @@ class HomeFragment : Fragment() {
     private lateinit var btnViewGroceryList: Button
     private lateinit var tvDailyTip: TextView
 
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

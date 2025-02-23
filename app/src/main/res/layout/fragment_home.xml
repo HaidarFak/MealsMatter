@@ -1,125 +1,53 @@
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"> <!-- Use a light background -->
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@color/backgroundColor"
+    tools:context=".ui.home.HomeFragment">
 
-    <com.google.android.material.appbar.AppBarLayout
+    <TextView
+        android:id="@+id/tv_greeting"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hello, User!"
+        android:textColor="@color/textColorPrimary"
+        android:textSize="24sp"
+        android:layout_marginBottom="16dp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_upcoming_meals"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/primaryLightColor" />
+
+    <Button
+        android:id="@+id/btn_plan_meal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white">
+        android:text="Plan a Meal"
+        android:backgroundTint="@color/primaryColor"
+        android:textColor="@color/backgroundColor"
+        android:layout_marginTop="16dp" />
 
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/white"
-            app:title="Meal Planner"
-            app:titleTextColor="@color/black" /> <!-- Add a menu icon -->
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <androidx.core.widget.NestedScrollView
+    <Button
+        android:id="@+id/btn_view_grocery_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="16dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:layout_height="wrap_content"
+        android:text="View Grocery List"
+        android:backgroundTint="@color/secondaryColor"
+        android:textColor="@color/backgroundColor"
+        android:layout_marginTop="16dp" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+    <TextView
+        android:id="@+id/tv_daily_tip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Did you know? Eating breakfast boosts your metabolism!"
+        android:textColor="@color/textColorSecondary"
+        android:layout_marginTop="16dp" />
 
-            <!-- User Greeting -->
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/tv_greeting"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Good Morning, User!"
-                android:textSize="24sp"
-                android:textColor="@color/black"
-                android:textStyle="bold"
-                android:layout_marginBottom="16dp" />
-
-            <!-- Upcoming Meals -->
-            <com.google.android.material.textview.MaterialTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Upcoming Meals"
-                android:textSize="18sp"
-                android:textColor="@color/black"
-                android:textStyle="bold"
-                android:layout_marginBottom="8dp" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_upcoming_meals"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp" />
-
-            <!-- Quick Actions -->
-            <com.google.android.material.textview.MaterialTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Quick Actions"
-                android:textSize="18sp"
-                android:textColor="@color/black"
-                android:textStyle="bold"
-                android:layout_marginBottom="8dp" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="16dp">
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_plan_meal"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Plan a Meal"
-                    android:textColor="@color/white"
-                    android:backgroundTint="@color/purple_500"
-                android:layout_marginEnd="8dp" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_view_grocery_list"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Grocery List"
-                    android:textColor="@color/white"
-                    android:backgroundTint="@color/purple_500" />
-            </LinearLayout>
-
-            <!-- Daily Tip -->
-            <com.google.android.material.textview.MaterialTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Tip of the Day"
-                android:textSize="18sp"
-                android:textColor="@color/black"
-                android:textStyle="bold"
-                android:layout_marginBottom="8dp" />
-
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cardBackgroundColor="@color/white"
-                app:cardElevation="4dp"
-                app:cardCornerRadius="8dp"
-                android:layout_marginBottom="16dp">
-
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/tv_daily_tip"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Did you know? Eating breakfast boosts your metabolism!"
-                    android:textSize="16sp"
-                    android:textColor="@color/black"
-                    android:padding="16dp" />
-            </com.google.android.material.card.MaterialCardView>
-        </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</LinearLayout>
