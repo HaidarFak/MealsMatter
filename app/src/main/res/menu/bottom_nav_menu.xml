@@ -17,8 +17,8 @@
         android:title="@string/title_notifications" />
 
     <item
-        android:id="@+id/navigation_Calender"
-        android:icon="@android:drawable/btn_dialog"
-        android:title="Calander" />
+        android:id="@+id/navigation_meal_plan"
+        android:icon="@android:drawable/ic_dialog_email"
+        android:title="Plan Meals" />
 
 </menu>

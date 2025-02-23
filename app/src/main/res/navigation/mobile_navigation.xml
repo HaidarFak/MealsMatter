@@ -32,9 +32,9 @@
         tools:layout="@layout/fragment_notifications" />
 
     <fragment
-        android:id="@+id/navigation_calender"
-        android:name="com.example.mealsmatter.ui.notifications.NotificationsFragment"
-        android:label="calender"
-        tools:layout="@layout/fragment_notifications" />
+        android:id="@+id/navigation_meal_plan"
+        android:name="com.example.mealsmatter.ui.MealPlanFragment"
+        android:label="Plan Meals"
+        tools:layout="@layout/fragment_meal_plan" />
 
 </navigation>
