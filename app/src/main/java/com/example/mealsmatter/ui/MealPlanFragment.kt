@@ -2,6 +2,8 @@ package com.example.mealsmatter.ui
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,9 +12,15 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.work.*
 import com.example.mealsmatter.R
-import java.util.Calendar
+import com.example.mealsmatter.utils.MealReminderWorker
+import java.text.SimpleDateFormat
+import java.util.*
+import java.util.concurrent.TimeUnit
 
 class MealPlanFragment : Fragment() {
 
@@ -24,6 +32,8 @@ class MealPlanFragment : Fragment() {
     private lateinit var tvSelectedTime: TextView
     private lateinit var etMealDescription: EditText
     private lateinit var btnSaveMeal: Button
+
+    private var selectedCalendar: Calendar = Calendar.getInstance()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -68,6 +78,10 @@ class MealPlanFragment : Fragment() {
         val datePickerDialog = DatePickerDialog(
             requireContext(),
             { _, selectedYear, selectedMonth, selectedDay ->
+                selectedCalendar.set(Calendar.YEAR, selectedYear)
+                selectedCalendar.set(Calendar.MONTH, selectedMonth)
+                selectedCalendar.set(Calendar.DAY_OF_MONTH, selectedDay)
+                
                 val selectedDate = "$selectedDay/${selectedMonth + 1}/$selectedYear"
                 tvSelectedDate.text = selectedDate
             },
@@ -86,14 +100,45 @@ class MealPlanFragment : Fragment() {
         val timePickerDialog = TimePickerDialog(
             requireContext(),
             { _, selectedHour, selectedMinute ->
+                selectedCalendar.set(Calendar.HOUR_OF_DAY, selectedHour)
+                selectedCalendar.set(Calendar.MINUTE, selectedMinute)
+                
                 val selectedTime = String.format("%02d:%02d", selectedHour, selectedMinute)
                 tvSelectedTime.text = selectedTime
             },
             hour,
             minute,
-            true // 24-hour format
+            true
         )
         timePickerDialog.show()
+    }
+
+    private fun scheduleMealReminder(mealName: String, calendar: Calendar) {
+        val currentTime = Calendar.getInstance()
+        val delayInMillis = calendar.timeInMillis - currentTime.timeInMillis
+        
+        if (delayInMillis <= 0) {
+            Toast.makeText(requireContext(), "Please select a future date and time", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // Create the input data for the worker
+        val inputData = Data.Builder()
+            .putString("meal_name", mealName)
+            .putString("meal_time", "${calendar.get(Calendar.HOUR_OF_DAY)}:${calendar.get(Calendar.MINUTE)}")
+            .build()
+
+        // Create the WorkRequest
+        val reminderRequest = OneTimeWorkRequestBuilder<MealReminderWorker>()
+            .setInitialDelay(delayInMillis, TimeUnit.MILLISECONDS)
+            .setInputData(inputData)
+            .build()
+
+        // Schedule the work
+        WorkManager.getInstance(requireContext())
+            .enqueue(reminderRequest)
+
+        Toast.makeText(requireContext(), "Reminder set for $mealName", Toast.LENGTH_SHORT).show()
     }
 
     private fun saveMeal() {
@@ -105,7 +150,10 @@ class MealPlanFragment : Fragment() {
         if (mealName.isEmpty() || mealDate == "No date selected" || mealTime == "No time selected" || mealDescription.isEmpty()) {
             Toast.makeText(requireContext(), "Please fill all fields", Toast.LENGTH_SHORT).show()
         } else {
-            // Save the meal (for now, just show a toast)
+            // Schedule the notification
+            scheduleMealReminder(mealName, selectedCalendar)
+
+            // Save the meal (your existing toast)
             Toast.makeText(
                 requireContext(),
                 "Meal Saved: $mealName on $mealDate at $mealTime",
@@ -117,6 +165,30 @@ class MealPlanFragment : Fragment() {
             tvSelectedDate.text = "No date selected"
             tvSelectedTime.text = "No time selected"
             etMealDescription.text.clear()
+            
+            // Reset the calendar
+            selectedCalendar = Calendar.getInstance()
         }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        
+        // Request notification permission
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(
+                    requireContext(),
+                    android.Manifest.permission.POST_NOTIFICATIONS
+                ) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(
+                    arrayOf(android.Manifest.permission.POST_NOTIFICATIONS),
+                    PERMISSION_REQUEST_CODE
+                )
+            }
+        }
+    }
+
+    companion object {
+        private const val PERMISSION_REQUEST_CODE = 123
     }
 }
