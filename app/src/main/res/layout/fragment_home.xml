@@ -37,7 +37,7 @@
         android:id="@+id/btn_view_grocery_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="View Grocery List"
+        android:text="Shopping List"
         android:backgroundTint="@color/secondaryColor"
         android:textColor="@color/backgroundColor"
         android:layout_marginTop="16dp" />
