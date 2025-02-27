@@ -11,6 +11,24 @@
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
-        <!-- Customize your theme here. -->
+    </style>
+
+    <!-- ActionBar custom style -->
+    <style name="Widget.App.ActionBar" parent="Widget.MaterialComponents.ActionBar.Primary">
+        <item name="background">?attr/colorPrimary</item>
+        <item name="elevation">4dp</item>
+        <item name="titleTextStyle">@style/TextAppearance.App.ActionBar.Title</item>
+    </style>
+
+    <!-- ActionBar text style -->
+    <style name="TextAppearance.App.ActionBar.Title" parent="TextAppearance.MaterialComponents.Headline6">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <!-- ActionBar theme overlay -->
+    <style name="ThemeOverlay.App.ActionBar" parent="ThemeOverlay.MaterialComponents.ActionBar">
+        <item name="colorOnPrimary">@color/white</item>
     </style>
 </resources>
