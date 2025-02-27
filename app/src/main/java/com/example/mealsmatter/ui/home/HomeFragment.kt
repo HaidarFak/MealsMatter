@@ -52,7 +52,7 @@ class HomeFragment : Fragment() {
         val root: View = binding.root
 
         // Initialize views
-        tvGreeting = root.findViewById(R.id.tv_greeting)
+
         rvUpcomingMeals = root.findViewById(R.id.rv_upcoming_meals)
         btnPlanMeal = root.findViewById(R.id.btn_plan_meal)
         btnViewGroceryList = root.findViewById(R.id.btn_view_grocery_list)
