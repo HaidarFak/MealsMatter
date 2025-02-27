@@ -41,11 +41,4 @@
         android:textColor="@color/textColorSecondary"
         android:layout_marginTop="16dp" />
 
-    <Button
-        android:id="@+id/testNotificationButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Test Notification (1 min)"
-        android:layout_margin="16dp"/>
-
 </LinearLayout>

@@ -101,13 +101,6 @@ class HomeFragment : Fragment() {
         
         // Request notification permission if needed
         requestNotificationPermission()
-        
-        binding.testNotificationButton.setOnClickListener {
-            val calendar = Calendar.getInstance().apply {
-                add(Calendar.MINUTE, 1) // Set notification for 1 minute from now
-            }
-            scheduleMealReminder("Test Meal", calendar)
-        }
     }
 
     override fun onDestroyView() {
