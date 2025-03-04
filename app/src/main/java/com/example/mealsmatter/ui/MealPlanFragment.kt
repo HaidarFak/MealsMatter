@@ -15,12 +15,16 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.work.*
 import com.example.mealsmatter.R
+import com.example.mealsmatter.data.Meal
+import com.example.mealsmatter.data.MealDatabase
 import com.example.mealsmatter.utils.MealReminderWorker
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlinx.coroutines.launch
 
 class MealPlanFragment : Fragment() {
 
@@ -34,11 +38,15 @@ class MealPlanFragment : Fragment() {
     private lateinit var btnSaveMeal: Button
 
     private var selectedCalendar: Calendar = Calendar.getInstance()
+    private lateinit var db: MealDatabase
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        // Initialize database
+        db = MealDatabase.getDatabase(requireContext())
+        
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_meal_plan, container, false)
 
@@ -152,6 +160,18 @@ class MealPlanFragment : Fragment() {
         } else {
             // Schedule the notification
             scheduleMealReminder(mealName, selectedCalendar)
+
+            // Save to database
+            lifecycleScope.launch {
+                val meal = Meal(
+                    name = mealName,
+                    description = mealDescription,
+                    date = mealDate,
+                    time = mealTime,
+                    timestamp = selectedCalendar.timeInMillis
+                )
+                db.mealDao().insertMeal(meal)
+            }
 
             // Save the meal (your existing toast)
             Toast.makeText(

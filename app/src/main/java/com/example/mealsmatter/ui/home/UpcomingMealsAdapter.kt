@@ -16,9 +16,14 @@ data class UpcomingMeal(
 )
 
 class UpcomingMealsAdapter(
-    private val meals: List<UpcomingMeal>,
+    private var meals: List<UpcomingMeal>,
     private val onMealClick: (UpcomingMeal) -> Unit
 ) : RecyclerView.Adapter<UpcomingMealsAdapter.MealViewHolder>() {
+
+    fun updateMeals(newMeals: List<UpcomingMeal>) {
+        meals = newMeals
+        notifyDataSetChanged()
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MealViewHolder {
         val view = LayoutInflater.from(parent.context)

@@ -25,6 +25,10 @@ import android.os.Build
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.mealsmatter.utils.MealReminderWorker
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
+import com.example.mealsmatter.data.MealDatabase
 
 class HomeFragment : Fragment() {
 
@@ -39,6 +43,7 @@ class HomeFragment : Fragment() {
     private lateinit var tvDailyTip: TextView
 
     private val PERMISSION_REQUEST_CODE = 123
+    private lateinit var db: MealDatabase
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -76,6 +81,22 @@ class HomeFragment : Fragment() {
         // Observe ViewModel data (if needed)
         homeViewModel.text.observe(viewLifecycleOwner) {
             // Update UI with ViewModel data
+        }
+
+        db = MealDatabase.getDatabase(requireContext())
+        
+        // Observe meals from database
+        lifecycleScope.launch {
+            db.mealDao().getAllMeals().collect { meals ->
+                val upcomingMeals = meals.map { meal ->
+                    UpcomingMeal(
+                        name = meal.name,
+                        time = meal.time,
+                        calories = 0 // You might want to add calories to your Meal entity
+                    )
+                }
+                (rvUpcomingMeals.adapter as UpcomingMealsAdapter).updateMeals(upcomingMeals)
+            }
         }
 
         return root
