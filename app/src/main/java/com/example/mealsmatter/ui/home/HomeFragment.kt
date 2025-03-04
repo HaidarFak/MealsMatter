@@ -29,6 +29,7 @@ import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import com.example.mealsmatter.data.MealDatabase
+import com.example.mealsmatter.data.Meal
 
 class HomeFragment : Fragment() {
 
@@ -63,16 +64,16 @@ class HomeFragment : Fragment() {
 
         // Set up RecyclerView for upcoming meals
         rvUpcomingMeals.layoutManager = LinearLayoutManager(requireContext())
-        val meals = listOf(
-            UpcomingMeal("Breakfast", "8:00 AM", calories = 350),
-            UpcomingMeal("Lunch", "12:30 PM", calories = 600),
-            UpcomingMeal("Dinner", "7:00 PM", calories = 800)
+        
+        val adapter = UpcomingMealsAdapter(
+            meals = emptyList(),
+            onMealClick = { meal ->
+                Toast.makeText(context, "Clicked: ${meal.name}", Toast.LENGTH_SHORT).show()
+            },
+            onDeleteClick = { meal ->
+                deleteMeal(meal)
+            }
         )
-
-        val adapter = UpcomingMealsAdapter(meals) { meal ->
-            // Handle meal click
-            Toast.makeText(context, "Clicked: ${meal.name}", Toast.LENGTH_SHORT).show()
-        }
         rvUpcomingMeals.adapter = adapter
 
         // Set daily tip
@@ -88,14 +89,7 @@ class HomeFragment : Fragment() {
         // Observe meals from database
         lifecycleScope.launch {
             db.mealDao().getAllMeals().collect { meals ->
-                val upcomingMeals = meals.map { meal ->
-                    UpcomingMeal(
-                        name = meal.name,
-                        time = meal.time,
-                        calories = 0 // You might want to add calories to your Meal entity
-                    )
-                }
-                (rvUpcomingMeals.adapter as UpcomingMealsAdapter).updateMeals(upcomingMeals)
+                adapter.updateMeals(meals)
             }
         }
 
@@ -180,6 +174,17 @@ class HomeFragment : Fragment() {
                 }
             }
             else -> super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        }
+    }
+
+    private fun deleteMeal(meal: Meal) {
+        lifecycleScope.launch {
+            try {
+                db.mealDao().deleteMeal(meal)
+                showToast("Meal deleted successfully")
+            } catch (e: Exception) {
+                showToast("Error deleting meal")
+            }
         }
     }
 }
