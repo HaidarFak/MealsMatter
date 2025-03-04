@@ -54,8 +54,6 @@ class HomeFragment : Fragment() {
         // Initialize views
 
         rvUpcomingMeals = root.findViewById(R.id.rv_upcoming_meals)
-        btnPlanMeal = root.findViewById(R.id.btn_plan_meal)
-        btnViewGroceryList = root.findViewById(R.id.btn_view_grocery_list)
         tvDailyTip = root.findViewById(R.id.tv_daily_tip)
 
         // Set up RecyclerView for upcoming meals
@@ -71,19 +69,6 @@ class HomeFragment : Fragment() {
             Toast.makeText(context, "Clicked: ${meal.name}", Toast.LENGTH_SHORT).show()
         }
         rvUpcomingMeals.adapter = adapter
-
-        // Set up button click listeners
-        btnPlanMeal.setOnClickListener {
-            // Navigate to the meal planning screen
-            // Example: findNavController().navigate(R.id.action_homeFragment_to_mealPlanFragment)
-            showToast("Navigate to Plan Meal Screen")
-        }
-
-        btnViewGroceryList.setOnClickListener {
-            // Navigate to the grocery list screen
-            // Example: findNavController().navigate(R.id.action_homeFragment_to_groceryListFragment)
-            showToast("Navigate to Grocery List Screen")
-        }
 
         // Set daily tip
         tvDailyTip.text = getDailyTip()
