@@ -1,25 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Base Colors -->
     <color name="white">#FFFFFFFF</color>
     <color name="black">#FF000000</color>
     <color name="gray">#757575</color>
+
+    <!-- Legacy Colors (can be removed if not used) -->
     <color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#FF6200EE</color>
     <color name="purple_700">#FF3700B3</color>
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
 
-        <color name="primaryColor">#3F51B5</color>
-        <color name="primaryLightColor">#3F51B5</color>
-        <color name="primaryDarkColor">#3700B3</color>
-        <color name="secondaryColor">#3F51B5</color>
-        <color name="secondaryLightColor">#3F51B5</color>
-        <color name="secondaryDarkColor">#018786</color>
-        <color name="backgroundColor">#FFFFFF</color>
-        <color name="textColorPrimary">#000000</color>
-        <color name="textColorSecondary">#565656</color>
+    <!-- Theme Colors -->
+    <color name="primary">#FF5722</color>  <!-- A warm orange -->
+    <color name="primaryDark">#E64A19</color>
+    <color name="primaryLight">#FFCCBC</color>
+    <color name="accent">#4CAF50</color>  <!-- Fresh green -->
+    
+    <!-- Required Theme Color References -->
+    <color name="primaryColor">#FF5722</color>
+    <color name="primaryDarkColor">#E64A19</color>
+    <color name="primaryLightColor">#FFCCBC</color>
+    <color name="secondaryColor">#4CAF50</color>
+    <color name="secondaryLightColor">#66BB6A</color>
+    <color name="secondaryDarkColor">#2E7D32</color>
+    
+    <!-- Background Colors -->
+    <color name="backgroundColor">#FAFAFA</color>
+    <color name="surfaceColor">#FFFFFF</color>
+    <color name="cardBackground">#FFFFFF</color>
+    
+    <!-- Text Colors -->
+    <color name="textColorPrimary">#212121</color>
+    <color name="textColorSecondary">#757575</color>
+    <color name="textColorLight">#FFFFFF</color>
 
-    <!-- Add your custom colors here -->
-    <color name="primary_color">#FF6200EE</color>  <!-- Your main app color -->
-    <color name="primary_variant">#FF3700B3</color>  <!-- Darker version of your main color -->
+    <!-- Meal Category Colors -->
+    <color name="breakfast_color">#FFB74D</color>  <!-- Warm yellow -->
+    <color name="lunch_color">#66BB6A</color>      <!-- Fresh green -->
+    <color name="dinner_color">#7986CB</color>     <!-- Cool blue -->
+    <color name="snack_color">#BA68C8</color>      <!-- Purple -->
+
+    <!-- Status Colors -->
+    <color name="success">#4CAF50</color>
+    <color name="error">#F44336</color>
+    <color name="warning">#FFC107</color>
 </resources>

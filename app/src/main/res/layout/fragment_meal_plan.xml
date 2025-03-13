@@ -1,99 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/backgroundColor"
     android:padding="16dp">
 
-    <LinearLayout
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+        app:cardCornerRadius="12dp"
+        app:cardElevation="4dp"
+        android:background="@color/surfaceColor"
+        app:strokeWidth="1dp"
+        app:strokeColor="#E0E0E0">
 
-        <!-- Meal Name -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Meal Name"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
-        <EditText
-            android:id="@+id/et_meal_name"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Enter meal name"
-            android:inputType="textCapWords" />
+            android:orientation="vertical"
+            android:padding="16dp">
 
-        <!-- Meal Date -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Meal Date"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:layout_marginTop="16dp" />
+            <!-- Meal Name -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Meal Name"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/textColorPrimary"/>
 
-        <Button
-            android:id="@+id/btn_pick_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Pick Date" />
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                app:boxStrokeColor="@color/primaryColor"
+                app:hintTextColor="@color/primaryColor">
 
-        <TextView
-            android:id="@+id/tv_selected_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="No date selected"
-            android:layout_marginTop="8dp" />
+                <EditText
+                    android:id="@+id/et_meal_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Enter meal name"
+                    android:textColor="@color/textColorPrimary"
+                    android:inputType="textCapWords"/>
+            </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Meal Time -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Meal Time"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:layout_marginTop="16dp" />
+            <!-- Meal Date -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Meal Date"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/textColorPrimary"
+                android:layout_marginTop="24dp"/>
 
-        <Button
-            android:id="@+id/btn_pick_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Pick Time" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_pick_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pick Date"
+                android:layout_marginTop="8dp"
+                app:backgroundTint="@color/primaryColor"/>
 
-        <TextView
-            android:id="@+id/tv_selected_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="No time selected"
-            android:layout_marginTop="8dp" />
+            <TextView
+                android:id="@+id/tv_selected_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="No date selected"
+                android:textColor="@color/textColorSecondary"
+                android:layout_marginTop="8dp"/>
 
-        <!-- Meal Description -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Description"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:layout_marginTop="16dp" />
+            <!-- Meal Time -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Meal Time"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/textColorPrimary"
+                android:layout_marginTop="24dp"/>
 
-        <EditText
-            android:id="@+id/et_meal_description"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Enter meal description"
-            android:inputType="textMultiLine"
-            android:minLines="3" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_pick_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pick Time"
+                android:layout_marginTop="8dp"
+                app:backgroundTint="@color/primaryColor"/>
 
-        <!-- Save Button -->
-        <Button
-            android:id="@+id/btn_save_meal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Save Meal"
-            android:layout_marginTop="24dp"
-            android:backgroundTint="@color/purple_200"
-            android:textColor="@color/white" />
-    </LinearLayout>
+            <TextView
+                android:id="@+id/tv_selected_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="No time selected"
+                android:textColor="@color/textColorSecondary"
+                android:layout_marginTop="8dp"/>
+
+            <!-- Meal Description -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Description"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/textColorPrimary"
+                android:layout_marginTop="24dp"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                app:boxStrokeColor="@color/primaryColor"
+                app:hintTextColor="@color/primaryColor">
+
+                <EditText
+                    android:id="@+id/et_meal_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Enter meal description"
+                    android:textColor="@color/textColorPrimary"
+                    android:inputType="textMultiLine"
+                    android:minLines="3"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Save Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_save_meal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Save Meal"
+                android:layout_marginTop="32dp"
+                app:backgroundTint="@color/secondaryColor"
+                android:textColor="@color/textColorLight"
+                app:cornerRadius="8dp"/>
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
 </ScrollView>

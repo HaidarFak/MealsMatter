@@ -23,9 +23,11 @@ class UpcomingMealsAdapter(
     private val onDeleteClick: (Meal) -> Unit
 ) : RecyclerView.Adapter<UpcomingMealsAdapter.ViewHolder>() {
 
+
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val mealName: TextView = view.findViewById(R.id.tv_meal_name)
         val mealTime: TextView = view.findViewById(R.id.tv_meal_time)
+        val mealDescription: TextView = view.findViewById(R.id.tv_meal_description)
         val deleteButton: ImageButton = view.findViewById(R.id.btn_delete_meal)
     }
 
@@ -39,6 +41,7 @@ class UpcomingMealsAdapter(
         val meal = meals[position]
         holder.mealName.text = meal.name
         holder.mealTime.text = "${meal.date} at ${meal.time}"
+        holder.mealDescription.text = meal.description
         
         holder.itemView.setOnClickListener { onMealClick(meal) }
         holder.deleteButton.setOnClickListener { onDeleteClick(meal) }
