@@ -12,9 +12,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Grocery List"
-        android:textSize="24sp"
-        android:textColor="@color/textColorPrimary"
+        android:textSize="20sp"
+        android:textColor="@color/primaryColor"
         android:fontFamily="sans-serif-medium"
+        android:layout_marginTop="24dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
 
