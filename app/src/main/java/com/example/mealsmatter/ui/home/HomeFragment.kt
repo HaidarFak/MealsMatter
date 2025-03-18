@@ -30,6 +30,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import com.example.mealsmatter.data.MealDatabase
 import com.example.mealsmatter.data.Meal
+import com.example.mealsmatter.api.FoodFactsApi
 
 class HomeFragment : Fragment() {
 
@@ -111,9 +112,22 @@ class HomeFragment : Fragment() {
         _binding = null
     }
 
-    // Helper function to get a daily tip (dummy data for now)
+    // Helper function to get a daily tip
     private fun getDailyTip(): String {
-        return "Did you know? Eating breakfast boosts your metabolism!"
+        // Start with default tip
+        var tip = "Did you know? Eating breakfast boosts your metabolism!"
+        
+        // Launch a coroutine to fetch the tip
+        lifecycleScope.launch {
+            try {
+                val newTip = FoodFactsApi.getRandomFoodFact()
+                tvDailyTip.text = newTip
+            } catch (e: Exception) {
+                // Keep the default tip if there's an error
+            }
+        }
+        
+        return tip
     }
 
     private fun scheduleMealReminder(mealName: String, calendar: Calendar) {
