@@ -13,4 +13,9 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# Gradle properties with sensitive information
 gradle.properties
+
+# Keep the template file
+!gradle.properties.template
