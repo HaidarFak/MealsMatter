@@ -8,4 +8,6 @@
     <string name="calories_format">%d calories</string>
     <string name="datetime">DateTime</string>
     <string name="select_date">Select Date</string>
+    <string name="selected_date">Selected Date</string>
+    <string name="submit">Submit</string>
 </resources>
