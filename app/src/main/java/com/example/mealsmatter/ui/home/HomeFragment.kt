@@ -28,11 +28,13 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.mealsmatter.utils.MealReminderWorker
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import com.example.mealsmatter.data.MealDatabase
 import com.example.mealsmatter.data.Meal
 import com.example.mealsmatter.api.FoodFactsApi
+import com.example.mealsmatter.ui.mealselect.MealSelectionFragment
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -278,7 +280,10 @@ class HomeFragment : Fragment() {
 
         calendarView.setOnDateChangeListener { _, year, month, dayOfMonth ->
             val selectedDate = "$dayOfMonth/${month + 1}/$year"
-            tvCurrentDateTime.text = "Selected Date:\n$selectedDate"
+            val bundle = Bundle().apply {
+                putString("selected_date", selectedDate)
+            }
+            findNavController().navigate(R.id.navigation_meal_plan, bundle)
             dialog.dismiss()
         }
     }
