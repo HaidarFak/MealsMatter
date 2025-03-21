@@ -30,6 +30,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import com.example.mealsmatter.data.MealDatabase
 import com.example.mealsmatter.data.Meal
+import com.example.mealsmatter.api.FoodFactsApi
 
 class HomeFragment : Fragment() {
 
@@ -72,6 +73,9 @@ class HomeFragment : Fragment() {
             },
             onDeleteClick = { meal ->
                 deleteMeal(meal)
+            },
+            onEditClick = { meal, newName, newDescription, newDate, newTime ->
+                updateMeal(meal, newName, newDescription, newDate, newTime)
             }
         )
         rvUpcomingMeals.adapter = adapter
@@ -108,9 +112,22 @@ class HomeFragment : Fragment() {
         _binding = null
     }
 
-    // Helper function to get a daily tip (dummy data for now)
+    // Helper function to get a daily tip
     private fun getDailyTip(): String {
-        return "Did you know? Eating breakfast boosts your metabolism!"
+        // Start with default tip
+        var tip = "Did you know? Eating breakfast boosts your metabolism!"
+        
+        // Launch a coroutine to fetch the tip
+        lifecycleScope.launch {
+            try {
+                val newTip = FoodFactsApi.getRandomFoodFact()
+                tvDailyTip.text = newTip
+            } catch (e: Exception) {
+                // Keep the default tip if there's an error
+            }
+        }
+        
+        return tip
     }
 
     private fun scheduleMealReminder(mealName: String, calendar: Calendar) {
@@ -186,5 +203,43 @@ class HomeFragment : Fragment() {
                 showToast("Error deleting meal")
             }
         }
+    }
+
+    private fun updateMeal(meal: Meal, newName: String, newDescription: String, newDate: String, newTime: String) {
+        if (newName.isBlank()) {
+            showToast("Meal name cannot be empty")
+            return
+        }
+
+        lifecycleScope.launch {
+            try {
+                val updatedMeal = meal.copy(
+                    name = newName,
+                    description = newDescription,
+                    date = newDate,
+                    time = newTime,
+                    timestamp = calculateTimestamp(newDate, newTime)
+                )
+                db.mealDao().updateMeal(updatedMeal)
+                showToast("Meal updated successfully")
+            } catch (e: Exception) {
+                showToast("Error updating meal")
+            }
+        }
+    }
+
+    private fun calculateTimestamp(date: String, time: String): Long {
+        val (day, month, year) = date.split("/").map { it.toInt() }
+        val (hour, minute) = time.split(":").map { it.toInt() }
+        
+        return Calendar.getInstance().apply {
+            set(Calendar.YEAR, year)
+            set(Calendar.MONTH, month - 1) // Calendar months are 0-based
+            set(Calendar.DAY_OF_MONTH, day)
+            set(Calendar.HOUR_OF_DAY, hour)
+            set(Calendar.MINUTE, minute)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }.timeInMillis
     }
 }

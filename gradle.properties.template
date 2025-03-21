@@ -22,4 +22,5 @@ kotlin.code.style=official
 # thereby reducing the size of the R class for that library
 android.nonTransitiveRClass=true
 # Add your Spoonacular API key here (DO NOT COMMIT THE ACTUAL KEY)
-SPOONACULAR_API_KEY=YOUR_API_KEY_HERE
+# Replace YOUR_API_KEY_HERE with your actual Spoonacular API key
+SPOONACULAR_API_KEY=YOUR_API_KEY_HERE 
