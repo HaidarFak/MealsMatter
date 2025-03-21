@@ -20,8 +20,10 @@ import java.util.Calendar
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.Manifest
+import android.app.AlertDialog
 import android.content.pm.PackageManager
 import android.os.Build
+import android.widget.CalendarView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.mealsmatter.utils.MealReminderWorker
@@ -31,6 +33,9 @@ import kotlinx.coroutines.launch
 import com.example.mealsmatter.data.MealDatabase
 import com.example.mealsmatter.data.Meal
 import com.example.mealsmatter.api.FoodFactsApi
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class HomeFragment : Fragment() {
 
@@ -43,6 +48,8 @@ class HomeFragment : Fragment() {
     private lateinit var btnPlanMeal: Button
     private lateinit var btnViewGroceryList: Button
     private lateinit var tvDailyTip: TextView
+    private lateinit var btnShowCalender:Button
+    private lateinit var tvCurrentDateTime:TextView
 
     private val PERMISSION_REQUEST_CODE = 123
     private lateinit var db: MealDatabase
@@ -62,9 +69,18 @@ class HomeFragment : Fragment() {
 
         rvUpcomingMeals = root.findViewById(R.id.rv_upcoming_meals)
         tvDailyTip = root.findViewById(R.id.tv_daily_tip)
+        btnShowCalender = root.findViewById(R.id.btnShowCalendar)
+        tvCurrentDateTime = root.findViewById(R.id.tvCurrentDateTime)
+
 
         // Set up RecyclerView for upcoming meals
         rvUpcomingMeals.layoutManager = LinearLayoutManager(requireContext())
+
+        updateDateTime()
+
+        btnShowCalender.setOnClickListener {
+            showCalendarDialog()
+        }
         
         val adapter = UpcomingMealsAdapter(
             meals = emptyList(),
@@ -241,5 +257,29 @@ class HomeFragment : Fragment() {
             set(Calendar.SECOND, 0)
             set(Calendar.MILLISECOND, 0)
         }.timeInMillis
+    }
+
+
+    private fun updateDateTime() {
+        val sdf = SimpleDateFormat("EEE, dd MMM yyyy hh:mm a", Locale.getDefault())
+        val currentDateAndTime = sdf.format(Date())
+        tvCurrentDateTime.text = "Current Date & Time:\n$currentDateAndTime"
+    }
+
+    private fun showCalendarDialog() {
+        val calendarView = CalendarView(requireContext())
+        val builder = AlertDialog.Builder(requireContext())
+            .setView(calendarView)
+            .setTitle("Pick a Date")
+            .setNegativeButton("Cancel", null)
+
+        val dialog = builder.create()
+        dialog.show()
+
+        calendarView.setOnDateChangeListener { _, year, month, dayOfMonth ->
+            val selectedDate = "$dayOfMonth/${month + 1}/$year"
+            tvCurrentDateTime.text = "Selected Date:\n$selectedDate"
+            dialog.dismiss()
+        }
     }
 }

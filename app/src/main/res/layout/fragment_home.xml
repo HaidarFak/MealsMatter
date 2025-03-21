@@ -9,6 +9,31 @@
     tools:context=".ui.home.HomeFragment">
 
     <TextView
+            android:id="@+id/tvCurrentDateTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/datetime"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btnShowCalendar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:textSize="18sp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="20dp" />
+
+    <Button
+            android:id="@+id/btnShowCalendar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/activity_vertical_margin"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvCurrentDateTime"
+            android:text="@string/select_date"
+            android:layout_below="@id/tvCurrentDateTime"
+            android:layout_centerHorizontal="true" />
+
+    <TextView
         android:id="@+id/tv_greeting"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -18,7 +43,7 @@
         android:fontFamily="sans-serif-medium"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/btnShowCalendar" />
 
     <TextView
         android:id="@+id/upcoming_meals_label"

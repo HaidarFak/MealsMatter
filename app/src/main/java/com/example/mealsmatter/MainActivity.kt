@@ -17,7 +17,6 @@ class MainActivity : AppCompatActivity() {
 
         val navView: BottomNavigationView = findViewById(R.id.nav_view)
         val navController = findNavController(R.id.nav_host_fragment_activity_main)
-        val notificationContainer = findViewById<LinearLayout>(R.id.notification_container)
         
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
@@ -27,11 +26,6 @@ class MainActivity : AppCompatActivity() {
             )
         )
 
-
-        
         navView.setupWithNavController(navController)
-        notificationContainer.setOnClickListener {
-            // Navigate to the DetailsScreen.
-        }
     }
 }
