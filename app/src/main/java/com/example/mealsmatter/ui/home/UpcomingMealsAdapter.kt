@@ -32,11 +32,13 @@ class UpcomingMealsAdapter(
 ) : RecyclerView.Adapter<UpcomingMealsAdapter.ViewHolder>() {
 
     private var editingPosition = -1
+    private var expandedPosition = -1
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val mealName: TextView = view.findViewById(R.id.tv_meal_name)
         val mealTime: TextView = view.findViewById(R.id.tv_meal_time)
         val mealDescription: TextView = view.findViewById(R.id.tv_meal_description)
+        val mealDescriptionExpanded: TextView = view.findViewById(R.id.tv_meal_description_expanded)
         val editButton: ImageButton = view.findViewById(R.id.btn_edit_meal)
         val deleteButton: ImageButton = view.findViewById(R.id.btn_delete_meal)
 
@@ -85,6 +87,7 @@ class UpcomingMealsAdapter(
         holder.mealName.text = meal.name
         holder.mealTime.text = "${meal.date} at ${meal.time}"
         holder.mealDescription.text = meal.description
+        holder.mealDescriptionExpanded.text = meal.description
         
         // Set up edit mode views
         holder.editMealName.setText(meal.name)
@@ -94,8 +97,11 @@ class UpcomingMealsAdapter(
 
         // Handle visibility based on edit mode
         val isEditing = position == editingPosition
+        val isExpanded = position == expandedPosition
+
         holder.mealName.visibility = if (isEditing) View.GONE else View.VISIBLE
-        holder.mealDescription.visibility = if (isEditing) View.GONE else View.VISIBLE
+        holder.mealDescription.visibility = if (isEditing || isExpanded) View.GONE else View.VISIBLE
+        holder.mealDescriptionExpanded.visibility = if (!isEditing && isExpanded) View.VISIBLE else View.GONE
         holder.mealTime.visibility = if (isEditing) View.GONE else View.VISIBLE
         holder.editMealName.visibility = if (isEditing) View.VISIBLE else View.GONE
         holder.editMealDescription.visibility = if (isEditing) View.VISIBLE else View.GONE
@@ -132,8 +138,15 @@ class UpcomingMealsAdapter(
             ).show()
         }
 
+        // Set click listener for the entire item
+        holder.itemView.setOnClickListener {
+            if (!isEditing) {
+                expandedPosition = if (isExpanded) -1 else position
+                notifyItemChanged(position)
+            }
+        }
+
         // Set up click listeners
-        holder.itemView.setOnClickListener { onMealClick(meal) }
         holder.deleteButton.setOnClickListener { onDeleteClick(meal) }
         
         holder.editButton.setOnClickListener {
