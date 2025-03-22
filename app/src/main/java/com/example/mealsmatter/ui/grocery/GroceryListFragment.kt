@@ -52,6 +52,31 @@ class GroceryListFragment : Fragment() {
             // TODO: Add dialog to input new grocery item
         }
     }
+    private fun showAddItemDialog() {
+        val dialogView = LayoutInflater.from(requireContext())
+            .inflate(R.layout.dialog_add_grocery_item, null)
+
+        val itemNameInput = dialogView.findViewById<android.widget.EditText>(R.id.editTextItemName)
+        val itemQuantityInput = dialogView.findViewById<android.widget.EditText>(R.id.editTextItemQuantity)
+
+        val dialog = androidx.appcompat.app.AlertDialog.Builder(requireContext())
+            .setTitle("Add Grocery Item")
+            .setView(dialogView)
+            .setPositiveButton("Add") { _, _ ->
+                val name = itemNameInput.text.toString().trim()
+                val quantity = itemQuantityInput.text.toString().trim()
+
+                if (name.isNotEmpty()) {
+                    val newItem = GroceryItem(name = name, quantity = quantity)
+                    groceryItems.add(newItem)
+                    adapter.updateItems(groceryItems)
+                }
+            }
+            .setNegativeButton("Cancel", null)
+            .create()
+
+        dialog.show()
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()
