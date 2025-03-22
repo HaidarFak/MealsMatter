@@ -5,7 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database(entities = [Meal::class], version = 1)
+@Database(entities = [Meal::class], version = 2)
 abstract class MealDatabase : RoomDatabase() {
     abstract fun mealDao(): MealDao
 
@@ -19,10 +19,12 @@ abstract class MealDatabase : RoomDatabase() {
                     context.applicationContext,
                     MealDatabase::class.java,
                     "meal_database"
-                ).build()
+                )
+                .fallbackToDestructiveMigration() // This will recreate tables if schema changed
+                .build()
                 INSTANCE = instance
                 instance
             }
         }
     }
-} 
+}

@@ -92,9 +92,12 @@ class HomeFragment : Fragment() {
         
         // Observe meals from database
         lifecycleScope.launch {
-            db.mealDao().getAllMeals().collect { meals ->
-                adapter.updateMeals(meals)
-            }
+            db.mealDao().getAllMeals()
+                .collect { meals ->
+                    // Filter out recipes, only show planned meals
+                    val plannedMeals = meals.filter { !it.isRecipe }
+                    adapter.updateMeals(plannedMeals)
+                }
         }
 
         return root
