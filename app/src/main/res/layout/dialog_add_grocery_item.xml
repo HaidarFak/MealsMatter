@@ -8,15 +8,21 @@
     <EditText
         android:id="@+id/editTextItemName"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="56dp"
         android:hint="Item name"
-        android:inputType="text" />
+        android:inputType="text"
+        android:importantForAutofill="yes"
+        android:minHeight="48dp"
+        android:autofillHints="name" />
 
     <EditText
         android:id="@+id/editTextItemQuantity"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="56dp"
         android:hint="Quantity (optional)"
-        android:inputType="text" />
+        android:inputType="text"
+        android:importantForAutofill="yes"
+        android:minHeight="48dp"
+        android:autofillHints="postalAddress" />
 
 </LinearLayout>
