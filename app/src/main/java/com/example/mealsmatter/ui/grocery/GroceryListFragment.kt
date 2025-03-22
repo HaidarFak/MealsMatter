@@ -8,6 +8,8 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mealsmatter.data.GroceryItem
 import com.example.mealsmatter.databinding.FragmentGroceryListBinding
+import com.example.mealsmatter.R
+
 
 class GroceryListFragment : Fragment() {
 
@@ -49,7 +51,7 @@ class GroceryListFragment : Fragment() {
         adapter.updateItems(groceryItems)
 
         binding.fabAddItem.setOnClickListener {
-            // TODO: Add dialog to input new grocery item
+            showAddItemDialog() // TODO: Add dialog to input new grocery item
         }
     }
     private fun showAddItemDialog() {
