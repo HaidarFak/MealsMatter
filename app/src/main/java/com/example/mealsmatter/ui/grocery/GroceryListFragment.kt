@@ -71,7 +71,8 @@ class GroceryListFragment : Fragment() {
                 if (name.isNotEmpty()) {
                     val newItem = GroceryItem(name = name, quantity = quantity)
                     groceryItems.add(newItem)
-                    adapter.updateItems(groceryItems)
+                   // adapter.updateItems(groceryItems)
+                    adapter.notifyItemInserted(groceryItems.size - 1)
                 }
             }
             .setNegativeButton("Cancel", null)
