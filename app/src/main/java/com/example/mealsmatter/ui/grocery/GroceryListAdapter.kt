@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.ImageButton
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mealsmatter.R
 import com.example.mealsmatter.data.GroceryItem
@@ -18,6 +19,7 @@ class GroceryListAdapter(
 
     inner class GroceryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val itemCheckbox: CheckBox = itemView.findViewById(R.id.itemCheckbox)
+        val itemQuantity: TextView = itemView.findViewById(R.id.tv_item_quantity)
         val editButton: ImageButton = itemView.findViewById(R.id.editButton)
         val deleteButton: ImageButton = itemView.findViewById(R.id.deleteButton)
     }
@@ -30,8 +32,9 @@ class GroceryListAdapter(
 
     override fun onBindViewHolder(holder: GroceryViewHolder, position: Int) {
         val item = items[position]
-        holder.itemCheckbox.text = "${item.name} ${item.quantity}"
+        holder.itemCheckbox.text = item.name
         holder.itemCheckbox.isChecked = item.isChecked
+        holder.itemQuantity.text = item.quantity
 
         holder.itemCheckbox.setOnCheckedChangeListener(null) // Avoid triggering on recycled views
         holder.itemCheckbox.setOnCheckedChangeListener { _, isChecked ->
