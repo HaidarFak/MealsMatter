@@ -81,7 +81,7 @@ class UpcomingMealsAdapter(
         return ViewHolder(view)
     }
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint("SetTextI18n", "DefaultLocale")
     override fun onBindViewHolder(holder: ViewHolder, @SuppressLint("RecyclerView") position: Int) {
         val meal = meals[position]
         

@@ -1,43 +1,42 @@
 package com.example.mealsmatter.ui.home
 
-import android.widget.Toast
+import android.annotation.SuppressLint
+import android.app.AlertDialog
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.CalendarView
 import android.widget.TextView
+import android.widget.Toast
+import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.example.mealsmatter.R
-import com.example.mealsmatter.databinding.FragmentHomeBinding
-import com.example.mealsmatter.ui.home.UpcomingMeal
-import androidx.work.*
-import java.util.concurrent.TimeUnit
-import java.util.Calendar
-import android.app.DatePickerDialog
-import android.app.TimePickerDialog
-import android.Manifest
-import android.app.AlertDialog
-import android.content.pm.PackageManager
-import android.os.Build
-import android.widget.CalendarView
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import com.example.mealsmatter.utils.MealReminderWorker
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
-import com.example.mealsmatter.data.MealDatabase
-import com.example.mealsmatter.data.Meal
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.work.Data
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import com.example.mealsmatter.R
 import com.example.mealsmatter.api.FoodFactsApi
-import com.example.mealsmatter.ui.mealselect.MealSelectionFragment
+import com.example.mealsmatter.data.Meal
+import com.example.mealsmatter.data.MealDatabase
+import com.example.mealsmatter.databinding.FragmentHomeBinding
+import com.example.mealsmatter.utils.MealReminderWorker
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
+import java.time.format.DateTimeFormatter
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import java.util.concurrent.TimeUnit
 
 class HomeFragment : Fragment() {
 
@@ -56,6 +55,9 @@ class HomeFragment : Fragment() {
     private val PERMISSION_REQUEST_CODE = 123
     private lateinit var db: MealDatabase
 
+
+    @SuppressLint("SimpleDateFormat")
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -107,13 +109,22 @@ class HomeFragment : Fragment() {
         }
 
         db = MealDatabase.getDatabase(requireContext())
+
         
         // Observe meals from database
         lifecycleScope.launch {
             db.mealDao().getAllMeals()
                 .collect { meals ->
                     // Filter out recipes, only show planned meals
-                    val plannedMeals = meals.filter { !it.isRecipe }
+
+                    val plannedMeals = meals.filter {
+                        val sdf = SimpleDateFormat("dd/M/yyyy")
+                        val currentDate = sdf.format(Date())
+                        Log.d("MEALTAGG", "onCreateView: ${it.date.toString()}")
+                        Log.d("MEALTAGG", "onCreateView: ${currentDate.toString()}")
+                        !it.isRecipe && it.date.equals(currentDate)
+
+                    }
                     adapter.updateMeals(plannedMeals)
                 }
         }
