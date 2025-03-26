@@ -5,45 +5,48 @@
     <color name="black">#FF000000</color>
     <color name="gray">#757575</color>
 
-    <!-- Legacy Colors (can be removed if not used) -->
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
+    <!-- Legacy Colors (required by default theme) -->
+    <color name="purple_200">#4CAF50</color>
+    <color name="purple_500">#2E7D32</color>
+    <color name="purple_700">#1B5E20</color>
+    <color name="teal_200">#80CBC4</color>
+    <color name="teal_700">#00796B</color>
 
     <!-- Theme Colors -->
-    <color name="primary">#FF5722</color>  <!-- A warm orange -->
-    <color name="primaryDark">#E64A19</color>
-    <color name="primaryLight">#FFCCBC</color>
-    <color name="accent">#4CAF50</color>  <!-- Fresh green -->
+    <color name="primary">#2E7D32</color>  <!-- Fresh Green -->
+    <color name="primaryDark">#1B5E20</color>
+    <color name="primaryLight">#A5D6A7</color>
+    <color name="accent">#26A69A</color>  <!-- Fresh Teal -->
     
     <!-- Required Theme Color References -->
-    <color name="primaryColor">#FF5722</color>
-    <color name="primaryDarkColor">#E64A19</color>
-    <color name="primaryLightColor">#FFCCBC</color>
-    <color name="secondaryColor">#4CAF50</color>
-    <color name="secondaryLightColor">#66BB6A</color>
-    <color name="secondaryDarkColor">#2E7D32</color>
+    <color name="primaryColor">#2E7D32</color>
+    <color name="primaryDarkColor">#1B5E20</color>
+    <color name="primaryLightColor">#A5D6A7</color>
+    <color name="secondaryColor">#26A69A</color>
+    <color name="secondaryLightColor">#80CBC4</color>
+    <color name="secondaryDarkColor">#00796B</color>
+    <color name="accentColor">#26A69A</color>
     
     <!-- Background Colors -->
-    <color name="backgroundColor">#FAFAFA</color>
+    <color name="backgroundColor">#F5F9F5</color>  <!-- Very Light Green Tint -->
     <color name="surfaceColor">#FFFFFF</color>
     <color name="cardBackground">#FFFFFF</color>
     
     <!-- Text Colors -->
-    <color name="textColorPrimary">#212121</color>
-    <color name="textColorSecondary">#757575</color>
+    <color name="textColorPrimary">#1B5E20</color>  <!-- Dark Green -->
+    <color name="textColorSecondary">#558B2F</color>  <!-- Medium Green -->
     <color name="textColorLight">#FFFFFF</color>
+    <color name="textColor">#2E7D32</color>  <!-- Fresh Green -->
 
     <!-- Meal Category Colors -->
-    <color name="breakfast_color">#FFB74D</color>  <!-- Warm yellow -->
-    <color name="lunch_color">#66BB6A</color>      <!-- Fresh green -->
-    <color name="dinner_color">#7986CB</color>     <!-- Cool blue -->
-    <color name="snack_color">#BA68C8</color>      <!-- Purple -->
+    <color name="breakfast_color">#FDD835</color>  <!-- Fresh Yellow - Morning Sun -->
+    <color name="lunch_color">#66BB6A</color>      <!-- Fresh Green - Midday Vitality -->
+    <color name="dinner_color">#26A69A</color>     <!-- Calming Teal - Evening -->
+    <color name="snack_color">#9CCC65</color>      <!-- Light Green - Fresh Snacks -->
 
     <!-- Status Colors -->
     <color name="success">#4CAF50</color>
-    <color name="error">#F44336</color>
-    <color name="warning">#FFC107</color>
+    <color name="error">#EF5350</color>  <!-- Softer Red -->
+    <color name="warning">#FFB300</color>  <!-- Warm Amber -->
+    <color name="errorColor">#EF5350</color>
 </resources>
