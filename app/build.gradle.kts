@@ -37,10 +37,15 @@ android {
     buildFeatures {
         viewBinding = true
     }
+
+    kapt {
+        arguments {
+            arg("room.schemaLocation", "$projectDir/schemas")
+        }
+    }
 }
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -53,16 +58,18 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    implementation ("androidx.appcompat:appcompat:1.3.1")  // or latest version
-    implementation ("com.applandeo:material-calendar-view:1.5.0")  // for CalendarView
-    implementation ("com.google.android.material:material:1.9.0")
-    implementation ("androidx.work:work-runtime-ktx:2.8.1")
-    implementation ("androidx.work:work-runtime:2.8.1")
+
+    // Updated Dependencies
+    implementation("androidx.appcompat:appcompat:1.3.1")  // or latest version
+    implementation("com.applandeo:material-calendar-view:1.5.0")  // CalendarView
+    implementation("com.google.android.material:material:1.9.0")
+    implementation("androidx.work:work-runtime-ktx:2.8.1") // Removed duplicate
+    implementation("androidx.preference:preference-ktx:1.2.1")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2")
     implementation("androidx.fragment:fragment-ktx:1.6.2")
 
-    // Add Room dependencies
+    // Room dependencies
     val roomVersion = "2.6.1"
     implementation("androidx.room:room-runtime:$roomVersion")
     implementation("androidx.room:room-ktx:$roomVersion")
