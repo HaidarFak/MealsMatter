@@ -9,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
@@ -21,6 +20,9 @@ import com.example.mealsmatter.R
 import com.example.mealsmatter.data.Meal
 import com.example.mealsmatter.data.MealDatabase
 import com.example.mealsmatter.utils.MealReminderWorker
+import com.google.android.material.checkbox.MaterialCheckBox
+import com.google.android.material.switchmaterial.SwitchMaterial
+import com.google.android.material.textfield.TextInputEditText
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -29,13 +31,22 @@ import kotlinx.coroutines.launch
 class MealPlanFragment : Fragment() {
 
     // Declare views
-    private lateinit var etMealName: EditText
+    private lateinit var etMealName: TextInputEditText
     private lateinit var btnPickDate: Button
     private lateinit var tvSelectedDate: TextView
     private lateinit var btnPickTime: Button
     private lateinit var tvSelectedTime: TextView
-    private lateinit var etMealDescription: EditText
+    private lateinit var etMealDescription: TextInputEditText
     private lateinit var btnSaveMeal: Button
+
+    // Recipe views
+    private lateinit var switchIsRecipe: SwitchMaterial
+    private lateinit var layoutRecipeDetails: ViewGroup
+    private lateinit var etIngredients: TextInputEditText
+    private lateinit var etCookingTime: TextInputEditText
+    private lateinit var etServings: TextInputEditText
+    private lateinit var etInstructions: TextInputEditText
+    private lateinit var cbAddToSchedule: MaterialCheckBox
 
     private var selectedCalendar: Calendar = Calendar.getInstance()
     private lateinit var db: MealDatabase
@@ -58,6 +69,47 @@ class MealPlanFragment : Fragment() {
         tvSelectedTime = view.findViewById(R.id.tv_selected_time)
         etMealDescription = view.findViewById(R.id.et_meal_description)
         btnSaveMeal = view.findViewById(R.id.btn_save_meal)
+
+        // Initialize recipe views
+        switchIsRecipe = view.findViewById(R.id.switch_is_recipe)
+        layoutRecipeDetails = view.findViewById(R.id.layout_recipe_details)
+        etIngredients = view.findViewById(R.id.et_ingredients)
+        etCookingTime = view.findViewById(R.id.et_cooking_time)
+        etServings = view.findViewById(R.id.et_servings)
+        etInstructions = view.findViewById(R.id.et_instructions)
+        cbAddToSchedule = view.findViewById(R.id.cb_add_to_schedule)
+
+        // Check for recipe data in arguments
+        arguments?.let { args ->
+            if (args.containsKey("recipeName")) {
+                // Pre-fill form with recipe data
+                etMealName.setText(args.getString("recipeName"))
+                etMealDescription.setText(args.getString("recipeDescription"))
+                
+                // Enable recipe mode and show recipe details
+                switchIsRecipe.isChecked = true
+                layoutRecipeDetails.visibility = View.VISIBLE
+                
+                // Fill recipe details
+                etIngredients.setText(args.getString("recipeIngredients"))
+                etCookingTime.setText(args.getInt("recipeCookingTime").toString())
+                etServings.setText(args.getInt("recipeServings").toString())
+                etInstructions.setText(args.getString("recipeInstructions"))
+            }
+        }
+
+        // Set up recipe switch
+        switchIsRecipe.setOnCheckedChangeListener { _, isChecked ->
+            layoutRecipeDetails.visibility = if (isChecked) View.VISIBLE else View.GONE
+            if (!isChecked) {
+                // Clear recipe fields when switching off
+                etIngredients.text?.clear()
+                etCookingTime.text?.clear()
+                etServings.text?.clear()
+                etInstructions.text?.clear()
+                cbAddToSchedule.isChecked = true
+            }
+        }
 
         // Set up date picker
         btnPickDate.setOnClickListener {
@@ -121,9 +173,9 @@ class MealPlanFragment : Fragment() {
         timePickerDialog.show()
     }
 
-    private fun scheduleMealReminder(mealName: String, calendar: Calendar) {
+    private fun scheduleNotification(meal: Meal) {
         val currentTime = Calendar.getInstance()
-        val delayInMillis = calendar.timeInMillis - currentTime.timeInMillis
+        val delayInMillis = meal.timestamp - currentTime.timeInMillis
         
         if (delayInMillis <= 0) {
             Toast.makeText(requireContext(), "Please select a future date and time", Toast.LENGTH_SHORT).show()
@@ -132,8 +184,8 @@ class MealPlanFragment : Fragment() {
 
         // Create the input data for the worker
         val inputData = Data.Builder()
-            .putString("meal_name", mealName)
-            .putString("meal_time", "${calendar.get(Calendar.HOUR_OF_DAY)}:${calendar.get(Calendar.MINUTE)}")
+            .putString("meal_name", meal.name)
+            .putString("meal_time", "${meal.time}")
             .build()
 
         // Create the WorkRequest
@@ -146,48 +198,83 @@ class MealPlanFragment : Fragment() {
         WorkManager.getInstance(requireContext())
             .enqueue(reminderRequest)
 
-        Toast.makeText(requireContext(), "Reminder set for $mealName", Toast.LENGTH_SHORT).show()
+        Toast.makeText(requireContext(), "Reminder set for ${meal.name}", Toast.LENGTH_SHORT).show()
     }
 
     private fun saveMeal() {
-        val mealName = etMealName.text.toString()
-        val mealDate = tvSelectedDate.text.toString()
-        val mealTime = tvSelectedTime.text.toString()
-        val mealDescription = etMealDescription.text.toString()
+        val name = etMealName.text.toString()
+        val description = etMealDescription.text.toString()
+        val isRecipe = switchIsRecipe.isChecked
+        val addToSchedule = cbAddToSchedule.isChecked
 
-        if (mealName.isEmpty() || mealDate == "No date selected" || mealTime == "No time selected" || mealDescription.isEmpty()) {
-            Toast.makeText(requireContext(), "Please fill all fields", Toast.LENGTH_SHORT).show()
-        } else {
-            // Schedule the notification
-            scheduleMealReminder(mealName, selectedCalendar)
+        // Validate required fields based on mode
+        if (name.isEmpty()) {
+            Toast.makeText(context, "Please enter a meal name", Toast.LENGTH_SHORT).show()
+            return
+        }
 
-            // Save to database
-            lifecycleScope.launch {
-                val meal = Meal(
-                    name = mealName,
-                    description = mealDescription,
-                    date = mealDate,
-                    time = mealTime,
-                    timestamp = selectedCalendar.timeInMillis
+        if (addToSchedule && (tvSelectedDate.text == "Select Date" || tvSelectedTime.text == "Select Time")) {
+            Toast.makeText(context, "Please select date and time", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val ingredients = if (isRecipe) etIngredients.text.toString() else ""
+        val cookingTime = if (isRecipe) etCookingTime.text.toString().toIntOrNull() ?: 0 else 0
+        val servings = if (isRecipe) etServings.text.toString().toIntOrNull() ?: 0 else 0
+        val instructions = if (isRecipe) etInstructions.text.toString() else ""
+
+        // Check if we're using a recipe from library
+        val isFromLibrary = arguments?.containsKey("recipeName") == true
+
+        lifecycleScope.launch {
+            // If this is a recipe and not from library, save it as a recipe
+            if (isRecipe && !isFromLibrary) {
+                val recipe = Meal(
+                    name = name,
+                    description = description,
+                    date = "",  // Empty date for recipes
+                    time = "",  // Empty time for recipes
+                    timestamp = 0L,  // Zero timestamp for recipes
+                    isRecipe = true,
+                    ingredients = ingredients,
+                    cookingTime = cookingTime,
+                    servings = servings,
+                    instructions = instructions
                 )
-                db.mealDao().insertMeal(meal)
+                db.mealDao().insertMeal(recipe)
             }
 
-            // Save the meal (your existing toast)
-            Toast.makeText(
-                requireContext(),
-                "Meal Saved: $mealName on $mealDate at $mealTime",
-                Toast.LENGTH_SHORT
-            ).show()
+            // Save the meal only if addToSchedule is checked
+            if (addToSchedule) {
+                val timestamp = selectedCalendar.timeInMillis
+                val meal = Meal(
+                    name = name,
+                    description = description,
+                    date = tvSelectedDate.text.toString(),
+                    time = tvSelectedTime.text.toString(),
+                    timestamp = timestamp,
+                    isRecipe = false,  // Always false for planned meals
+                    ingredients = ingredients,
+                    cookingTime = cookingTime,
+                    servings = servings,
+                    instructions = instructions
+                )
+                db.mealDao().insertMeal(meal)
 
-            // Clear the form
-            etMealName.text.clear()
-            tvSelectedDate.text = "No date selected"
-            tvSelectedTime.text = "No time selected"
-            etMealDescription.text.clear()
-            
-            // Reset the calendar
-            selectedCalendar = Calendar.getInstance()
+                // Schedule notification only for planned meals
+                scheduleNotification(meal)
+            }
+
+            // Navigate back
+            activity?.runOnUiThread {
+                val message = when {
+                    isRecipe && addToSchedule -> "Recipe saved and added to schedule"
+                    isRecipe -> "Recipe saved to library"
+                    else -> "Meal added to schedule"
+                }
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                activity?.onBackPressed()
+            }
         }
     }
 
@@ -202,13 +289,9 @@ class MealPlanFragment : Fragment() {
                 ) != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(
                     arrayOf(android.Manifest.permission.POST_NOTIFICATIONS),
-                    PERMISSION_REQUEST_CODE
+                    123
                 )
             }
         }
-    }
-
-    companion object {
-        private const val PERMISSION_REQUEST_CODE = 123
     }
 }

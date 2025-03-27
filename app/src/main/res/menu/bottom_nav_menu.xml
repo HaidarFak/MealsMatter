@@ -8,12 +8,17 @@
 
     <item
         android:id="@+id/navigation_meal_plan"
-        android:icon="@drawable/ic_meal_plan"
+        android:icon="@drawable/ic_calendar"
         android:title="Plan Meals" />
 
     <item
+        android:id="@+id/navigation_library"
+        android:icon="@drawable/ic_library"
+        android:title="Recipe Library" />
+
+    <item
         android:id="@+id/navigation_grocery"
-        android:icon="@drawable/ic_grocery_list"
+        android:icon="@drawable/ic_grocery"
         android:title="Grocery List" />
 
 

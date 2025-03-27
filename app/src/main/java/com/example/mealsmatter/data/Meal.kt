@@ -11,5 +11,10 @@ data class Meal(
     val description: String,
     val date: String,
     val time: String,
-    val timestamp: Long // for sorting
-) 
+    val timestamp: Long, // for sorting
+    val isRecipe: Boolean = false, // flag to identify if this is a saved recipe
+    val ingredients: String = "", // comma-separated list of ingredients
+    val cookingTime: Int = 0, // in minutes
+    val servings: Int = 0,
+    val instructions: String = "" // step-by-step cooking instructions
+)

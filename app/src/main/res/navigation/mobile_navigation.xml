@@ -38,6 +38,12 @@
         tools:layout="@layout/fragment_meal_plan" />
 
     <fragment
+        android:id="@+id/navigation_library"
+        android:name="com.example.mealsmatter.ui.library.LibraryFragment"
+        android:label="Recipe Library"
+        tools:layout="@layout/fragment_library" />
+
+    <fragment
         android:id="@+id/navigation_grocery"
         android:name="com.example.mealsmatter.ui.grocery.GroceryListFragment"
         android:label="Grocery List"
