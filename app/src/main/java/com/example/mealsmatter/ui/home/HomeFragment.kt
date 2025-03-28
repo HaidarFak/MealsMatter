@@ -51,7 +51,8 @@ class HomeFragment : Fragment() {
     private lateinit var tvDailyTip: TextView
     private lateinit var btnShowCalender:Button
     private lateinit var tvCurrentDateTime:TextView
-
+    private var updatedDate: Date = Date()
+    private lateinit var adapter: UpcomingMealsAdapter
     private val PERMISSION_REQUEST_CODE = 123
     private lateinit var db: MealDatabase
 
@@ -80,13 +81,13 @@ class HomeFragment : Fragment() {
         // Set up RecyclerView for upcoming meals
         rvUpcomingMeals.layoutManager = LinearLayoutManager(requireContext())
 
-        updateDateTime()
+        updateDateTime(Date())
 
         btnShowCalender.setOnClickListener {
             showCalendarDialog()
         }
         
-        val adapter = UpcomingMealsAdapter(
+        adapter = UpcomingMealsAdapter(
             meals = emptyList(),
             onMealClick = { meal ->
                 Toast.makeText(context, "Clicked: ${meal.name}", Toast.LENGTH_SHORT).show()
@@ -112,22 +113,21 @@ class HomeFragment : Fragment() {
 
         
         // Observe meals from database
-        lifecycleScope.launch {
-            db.mealDao().getAllMeals()
-                .collect { meals ->
-                    // Filter out recipes, only show planned meals
+//        lifecycleScope.launch {
+//            db.mealDao().getAllMeals()
+//                .collect { meals ->
+//                    // Filter out recipes, only show planned meals
+//
+//                    val plannedMeals = meals.filter {
+//                        val sdf = SimpleDateFormat("dd/M/yyyy")
+//                        Log.d("MEALTAGG", "onCreateView: ${it.date} ${sdf.format(updatedDate)}")
+//                        !it.isRecipe && it.date == sdf.format(updatedDate)
+//                    }
+//                    adapter.updateMeals(plannedMeals)
+//                }
+//        }
 
-                    val plannedMeals = meals.filter {
-                        val sdf = SimpleDateFormat("dd/M/yyyy")
-                        val currentDate = sdf.format(Date())
-                        Log.d("MEALTAGG", "onCreateView: ${it.date.toString()}")
-                        Log.d("MEALTAGG", "onCreateView: ${currentDate.toString()}")
-                        !it.isRecipe && it.date.equals(currentDate)
-
-                    }
-                    adapter.updateMeals(plannedMeals)
-                }
-        }
+        loadMealsForDate(updatedDate,adapter)
 
         return root
     }
@@ -276,10 +276,12 @@ class HomeFragment : Fragment() {
     }
 
 
-    private fun updateDateTime() {
+    @SuppressLint("SetTextI18n")
+    private fun updateDateTime(selectedDate: Date) {
         val sdf = SimpleDateFormat("EEE, dd MMM yyyy hh:mm a", Locale.getDefault())
-        val currentDateAndTime = sdf.format(Date())
-        tvCurrentDateTime.text = "Current Date & Time:\n$currentDateAndTime"
+        val formattedDateTime = sdf.format(selectedDate)
+        updatedDate = selectedDate
+        tvCurrentDateTime.text = "Selected Date & Time:\n$formattedDateTime"
     }
 
     private fun showCalendarDialog() {
@@ -293,12 +295,42 @@ class HomeFragment : Fragment() {
         dialog.show()
 
         calendarView.setOnDateChangeListener { _, year, month, dayOfMonth ->
-            val selectedDate = "$dayOfMonth/${month + 1}/$year"
+            val calendar = Calendar.getInstance()
+            calendar.set(Calendar.YEAR, year)
+            calendar.set(Calendar.MONTH, month)
+            calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+
+            // Optional: Reset time to something specific if needed
+            calendar.set(Calendar.HOUR_OF_DAY, 0)
+            calendar.set(Calendar.MINUTE, 0)
+
+            val selectedDate = calendar.time
+            updateDateTime(selectedDate)
+            loadMealsForDate(selectedDate, adapter = adapter )
+
+
+            val formattedDateForBundle = "$dayOfMonth/${month + 1}/$year"
             val bundle = Bundle().apply {
-                putString("selected_date", selectedDate)
+                putString("selected_date", formattedDateForBundle)
             }
-            findNavController().navigate(R.id.navigation_meal_plan, bundle)
+
+//            findNavController().navigate(R.id.navigation_meal_plan, bundle)
             dialog.dismiss()
         }
     }
+
+    private fun loadMealsForDate(date: Date, adapter: UpcomingMealsAdapter) {
+        lifecycleScope.launch {
+            db.mealDao().getAllMeals()
+                .collect { meals ->
+                    val sdf = SimpleDateFormat("dd/M/yyyy", Locale.getDefault())
+                    val plannedMeals = meals.filter {
+                        !it.isRecipe && it.date == sdf.format(date)
+                    }
+                    adapter.updateMeals(plannedMeals)
+                }
+        }
+    }
+
+
 }
