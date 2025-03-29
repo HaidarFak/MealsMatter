@@ -5,7 +5,6 @@ import android.app.TimePickerDialog
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -126,8 +125,6 @@ class MealPlanFragment : Fragment() {
         btnSaveMeal.setOnClickListener {
             saveMeal()
         }
-
-        Log.d("CURRENTDATE", "onCreateView: ${tvSelectedDate.text}")
 
         return view
     }
