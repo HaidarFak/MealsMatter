@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scrollViewSummary"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:id="@+id/layoutSummaryContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvSummaryTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Meal Summary"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:layout_gravity="center_horizontal"
+            android:paddingBottom="16dp" />
+
+        <TextView
+            android:id="@+id/tvSelectedDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Selected Date: "
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:paddingBottom="12dp" />
+
+        <TextView
+            android:id="@+id/tvBreakfast"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="🍳 Breakfast:"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:paddingTop="8dp" />
+
+        <TextView
+            android:id="@+id/tvBreakfastItems"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Items here"
+            android:paddingBottom="12dp" />
+
+        <TextView
+            android:id="@+id/tvLunch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="🍛 Lunch:"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:paddingTop="8dp" />
+
+        <TextView
+            android:id="@+id/tvLunchItems"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Items here"
+            android:paddingBottom="12dp" />
+
+        <TextView
+            android:id="@+id/tvDinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="🍽️ Dinner:"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:paddingTop="8dp" />
+
+        <TextView
+            android:id="@+id/tvDinnerItems"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Items here"
+            android:paddingBottom="12dp" />
+
+    </LinearLayout>
+</ScrollView>
