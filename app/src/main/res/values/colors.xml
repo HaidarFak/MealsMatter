@@ -13,19 +13,18 @@
     <color name="teal_700">#00796B</color>
 
     <!-- Theme Colors -->
-    <color name="primary">#2E7D32</color>  <!-- Fresh Green -->
+    <color name="primary">#2E7D32</color>  <!-- For backward compatibility with layouts -->
+    <color name="primaryColor">#2E7D32</color>  <!-- Fresh Green -->
     <color name="primaryDark">#1B5E20</color>
     <color name="primaryLight">#A5D6A7</color>
-    <color name="accent">#26A69A</color>  <!-- Fresh Teal -->
+    <color name="accentColor">#26A69A</color>  <!-- Fresh Teal -->
     
     <!-- Required Theme Color References -->
-    <color name="primaryColor">#2E7D32</color>
-    <color name="primaryDarkColor">#1B5E20</color>
-    <color name="primaryLightColor">#A5D6A7</color>
+    <color name="primaryDarkColor">#FF3700B3</color>
+    <color name="primaryLightColor">#FFBB86FC</color>
     <color name="secondaryColor">#26A69A</color>
     <color name="secondaryLightColor">#80CBC4</color>
     <color name="secondaryDarkColor">#00796B</color>
-    <color name="accentColor">#26A69A</color>
     
     <!-- Background Colors -->
     <color name="backgroundColor">#F5F9F5</color>  <!-- Very Light Green Tint -->
@@ -36,7 +35,6 @@
     <color name="textColorPrimary">#1B5E20</color>  <!-- Dark Green -->
     <color name="textColorSecondary">#558B2F</color>  <!-- Medium Green -->
     <color name="textColorLight">#FFFFFF</color>
-    <color name="textColor">#2E7D32</color>  <!-- Fresh Green -->
 
     <!-- Meal Category Colors -->
     <color name="breakfast_color">#FDD835</color>  <!-- Fresh Yellow - Morning Sun -->
@@ -48,5 +46,8 @@
     <color name="success">#4CAF50</color>
     <color name="error">#EF5350</color>  <!-- Softer Red -->
     <color name="warning">#FFB300</color>  <!-- Warm Amber -->
-    <color name="errorColor">#EF5350</color>
+    <color name="errorColor">#FFB00020</color>
+
+    <!-- New Colors -->
+    <color name="dividerColor">#1F000000</color>
 </resources>
