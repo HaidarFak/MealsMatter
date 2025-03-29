@@ -1,36 +1,42 @@
 package com.example.mealsmatter.ui.home
 
-import android.widget.Toast
+import android.annotation.SuppressLint
+import android.app.AlertDialog
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.CalendarView
 import android.widget.TextView
+import android.widget.Toast
+import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.work.Data
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import com.example.mealsmatter.R
-import com.example.mealsmatter.databinding.FragmentHomeBinding
-import com.example.mealsmatter.ui.home.UpcomingMeal
-import androidx.work.*
-import java.util.concurrent.TimeUnit
-import java.util.Calendar
-import android.app.DatePickerDialog
-import android.app.TimePickerDialog
-import android.Manifest
-import android.content.pm.PackageManager
-import android.os.Build
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import com.example.mealsmatter.utils.MealReminderWorker
-import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
-import com.example.mealsmatter.data.MealDatabase
-import com.example.mealsmatter.data.Meal
 import com.example.mealsmatter.api.FoodFactsApi
+import com.example.mealsmatter.data.Meal
+import com.example.mealsmatter.data.MealDatabase
+import com.example.mealsmatter.databinding.FragmentHomeBinding
+import com.example.mealsmatter.utils.MealReminderWorker
+import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.time.format.DateTimeFormatter
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
+import java.util.concurrent.TimeUnit
 
 class HomeFragment : Fragment() {
 
@@ -43,10 +49,16 @@ class HomeFragment : Fragment() {
     private lateinit var btnPlanMeal: Button
     private lateinit var btnViewGroceryList: Button
     private lateinit var tvDailyTip: TextView
-
+    private lateinit var btnShowCalender:Button
+    private lateinit var tvCurrentDateTime:TextView
+    private var updatedDate: Date = Date()
+    private lateinit var adapter: UpcomingMealsAdapter
     private val PERMISSION_REQUEST_CODE = 123
     private lateinit var db: MealDatabase
 
+
+    @SuppressLint("SimpleDateFormat")
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -62,11 +74,20 @@ class HomeFragment : Fragment() {
 
         rvUpcomingMeals = root.findViewById(R.id.rv_upcoming_meals)
         tvDailyTip = root.findViewById(R.id.tv_daily_tip)
+        btnShowCalender = root.findViewById(R.id.btnShowCalendar)
+        tvCurrentDateTime = root.findViewById(R.id.tvCurrentDateTime)
+
 
         // Set up RecyclerView for upcoming meals
         rvUpcomingMeals.layoutManager = LinearLayoutManager(requireContext())
+
+        updateDateTime(Date())
+
+        btnShowCalender.setOnClickListener {
+            showCalendarDialog()
+        }
         
-        val adapter = UpcomingMealsAdapter(
+        adapter = UpcomingMealsAdapter(
             meals = emptyList(),
             onMealClick = { meal ->
                 Toast.makeText(context, "Clicked: ${meal.name}", Toast.LENGTH_SHORT).show()
@@ -89,16 +110,24 @@ class HomeFragment : Fragment() {
         }
 
         db = MealDatabase.getDatabase(requireContext())
+
         
         // Observe meals from database
-        lifecycleScope.launch {
-            db.mealDao().getAllMeals()
-                .collect { meals ->
-                    // Filter out recipes, only show planned meals
-                    val plannedMeals = meals.filter { !it.isRecipe }
-                    adapter.updateMeals(plannedMeals)
-                }
-        }
+//        lifecycleScope.launch {
+//            db.mealDao().getAllMeals()
+//                .collect { meals ->
+//                    // Filter out recipes, only show planned meals
+//
+//                    val plannedMeals = meals.filter {
+//                        val sdf = SimpleDateFormat("dd/M/yyyy")
+//                        Log.d("MEALTAGG", "onCreateView: ${it.date} ${sdf.format(updatedDate)}")
+//                        !it.isRecipe && it.date == sdf.format(updatedDate)
+//                    }
+//                    adapter.updateMeals(plannedMeals)
+//                }
+//        }
+
+        loadMealsForDate(updatedDate,adapter)
 
         return root
     }
@@ -245,4 +274,63 @@ class HomeFragment : Fragment() {
             set(Calendar.MILLISECOND, 0)
         }.timeInMillis
     }
+
+
+    @SuppressLint("SetTextI18n")
+    private fun updateDateTime(selectedDate: Date) {
+        val sdf = SimpleDateFormat("EEE, dd MMM yyyy hh:mm a", Locale.getDefault())
+        val formattedDateTime = sdf.format(selectedDate)
+        updatedDate = selectedDate
+        tvCurrentDateTime.text = "Selected Date & Time:\n$formattedDateTime"
+    }
+
+    private fun showCalendarDialog() {
+        val calendarView = CalendarView(requireContext())
+        val builder = AlertDialog.Builder(requireContext())
+            .setView(calendarView)
+            .setTitle("Pick a Date")
+            .setNegativeButton("Cancel", null)
+
+        val dialog = builder.create()
+        dialog.show()
+
+        calendarView.setOnDateChangeListener { _, year, month, dayOfMonth ->
+            val calendar = Calendar.getInstance()
+            calendar.set(Calendar.YEAR, year)
+            calendar.set(Calendar.MONTH, month)
+            calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+
+            // Optional: Reset time to something specific if needed
+            calendar.set(Calendar.HOUR_OF_DAY, 0)
+            calendar.set(Calendar.MINUTE, 0)
+
+            val selectedDate = calendar.time
+            updateDateTime(selectedDate)
+            loadMealsForDate(selectedDate, adapter = adapter )
+
+
+            val formattedDateForBundle = "$dayOfMonth/${month + 1}/$year"
+            val bundle = Bundle().apply {
+                putString("selected_date", formattedDateForBundle)
+            }
+
+//            findNavController().navigate(R.id.navigation_meal_plan, bundle)
+            dialog.dismiss()
+        }
+    }
+
+    private fun loadMealsForDate(date: Date, adapter: UpcomingMealsAdapter) {
+        lifecycleScope.launch {
+            db.mealDao().getAllMeals()
+                .collect { meals ->
+                    val sdf = SimpleDateFormat("dd/M/yyyy", Locale.getDefault())
+                    val plannedMeals = meals.filter {
+                        !it.isRecipe && it.date == sdf.format(date)
+                    }
+                    adapter.updateMeals(plannedMeals)
+                }
+        }
+    }
+
+
 }

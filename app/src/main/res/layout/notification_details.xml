@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/backgroundColor">
+
+    <!-- Toolbar -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/primaryColor"
+        android:title="Notification Details"
+        android:titleTextColor="@android:color/white"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <!-- Notification Content Card -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/notification_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="6dp"
+        android:background="@color/surfaceColor"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Notification Title -->
+            <TextView
+                android:id="@+id/notification_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Notification Title"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:paddingBottom="4dp"/>
+
+            <!-- Notification Timestamp -->
+            <TextView
+                android:id="@+id/notification_timestamp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="March 17, 2025, 10:00 AM"
+                android:textSize="14sp"
+                android:textColor="@color/black"
+                android:paddingBottom="8dp"/>
+
+            <!-- Notification Description -->
+            <TextView
+                android:id="@+id/notification_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="This is the detailed content of the notification..."
+                android:textSize="16sp"
+                android:textColor="@color/black"
+                android:paddingBottom="8dp"/>
+
+            <!-- Optional Notification Image -->
+            <ImageView
+                android:id="@+id/notification_image"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:scaleType="centerCrop"
+                android:visibility="gone"
+                android:src="@drawable/ic_notification"/>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

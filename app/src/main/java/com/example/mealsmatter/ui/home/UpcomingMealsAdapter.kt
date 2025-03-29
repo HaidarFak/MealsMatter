@@ -1,5 +1,6 @@
 package com.example.mealsmatter.ui.home
 
+import android.annotation.SuppressLint
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -80,7 +81,8 @@ class UpcomingMealsAdapter(
         return ViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    @SuppressLint("SetTextI18n", "DefaultLocale")
+    override fun onBindViewHolder(holder: ViewHolder, @SuppressLint("RecyclerView") position: Int) {
         val meal = meals[position]
         
         // Set up normal view mode

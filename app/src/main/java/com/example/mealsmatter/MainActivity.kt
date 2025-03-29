@@ -2,6 +2,8 @@ package com.example.mealsmatter
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
+import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.navigation.findNavController
