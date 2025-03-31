@@ -30,6 +30,9 @@ import com.example.mealsmatter.data.MealDatabase
 import com.example.mealsmatter.data.Meal
 import com.example.mealsmatter.api.FoodFactsApi
 import androidx.navigation.fragment.findNavController
+import java.text.SimpleDateFormat
+import java.util.Locale
+import android.util.Log
 
 class HomeFragment : Fragment() {
 
@@ -37,6 +40,9 @@ class HomeFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var db: MealDatabase
     private val PERMISSION_REQUEST_CODE = 123
+    private var selectedDate: String? = null
+    private val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+    private val displayDateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -51,27 +57,75 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         db = MealDatabase.getDatabase(requireContext())
 
-        setupGreeting()
         setupUpcomingMeals()
         setupButtons()
         setupDailyTip()
         checkNotificationPermission()
+        setupCalendarButton()
     }
 
-    private fun setupGreeting() {
-        val calendar = Calendar.getInstance()
-        val greeting = when (calendar.get(Calendar.HOUR_OF_DAY)) {
-            in 0..11 -> "Good Morning"
-            in 12..16 -> "Good Afternoon"
-            else -> "Good Evening"
+    private fun setupCalendarButton() {
+        binding.btnCalendar.setOnClickListener {
+            showDatePicker()
         }
-        binding.tvGreeting.text = greeting
+        
+        binding.btnClearDate.setOnClickListener {
+            selectedDate = null
+            binding.tvSelectedDate.text = ""
+            binding.btnClearDate.visibility = View.GONE
+            loadMealsForSelectedDate()
+        }
     }
 
-    private fun setupUpcomingMeals() {
-        binding.rvUpcomingMeals.layoutManager = LinearLayoutManager(context)
+    private fun showDatePicker() {
+        val calendar = Calendar.getInstance()
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+        DatePickerDialog(
+            requireContext(),
+            R.style.CustomDatePickerDialog,
+            { _, selectedYear, selectedMonth, selectedDay ->
+                calendar.set(selectedYear, selectedMonth, selectedDay)
+                selectedDate = dateFormat.format(calendar.time)
+                binding.tvSelectedDate.text = "Selected: ${displayDateFormat.format(calendar.time)}"
+                binding.btnClearDate.visibility = View.VISIBLE
+                loadMealsForSelectedDate()
+            },
+            year,
+            month,
+            day
+        ).show()
+    }
+
+    private fun loadMealsForSelectedDate() {
         lifecycleScope.launch {
-            val meals = db.mealDao().getUpcomingMeals(System.currentTimeMillis())
+            val meals = if (selectedDate != null) {
+                Log.d("HomeFragment", "Selected date: $selectedDate")
+                // Create alternative date format (single digit day)
+                val dateParts = selectedDate!!.split("/")
+                val day = dateParts[0].toInt()
+                val month = dateParts[1]
+                val year = dateParts[2]
+                val selectedDateAlt = "$day/$month/$year"
+                Log.d("HomeFragment", "Alternative date format: $selectedDateAlt")
+                
+                val mealsByDate = db.mealDao().getMealsByDate(selectedDate!!, selectedDateAlt)
+                Log.d("HomeFragment", "Found ${mealsByDate.size} meals for date $selectedDate")
+                mealsByDate.forEach { meal ->
+                    Log.d("HomeFragment", "Meal: ${meal.name}, Date: ${meal.date}, Time: ${meal.time}, Timestamp: ${meal.timestamp}")
+                }
+                mealsByDate
+            } else {
+                val upcomingMeals = db.mealDao().getUpcomingMeals(System.currentTimeMillis())
+                Log.d("HomeFragment", "Showing upcoming meals: ${upcomingMeals.size}")
+                upcomingMeals.forEach { meal ->
+                    Log.d("HomeFragment", "Upcoming Meal: ${meal.name}, Date: ${meal.date}, Time: ${meal.time}, Timestamp: ${meal.timestamp}")
+                }
+                upcomingMeals
+            }
+            
             val adapter = UpcomingMealsAdapter(
                 meals = meals,
                 onMealClick = { meal ->
@@ -80,10 +134,12 @@ class HomeFragment : Fragment() {
                 onDeleteClick = { meal ->
                     lifecycleScope.launch {
                         db.mealDao().deleteMeal(meal)
-                        setupUpcomingMeals() // Refresh the list
+                        loadMealsForSelectedDate() // Refresh the list
                     }
                 },
                 onEditClick = { meal, newName, newDescription, newDate, newTime ->
+                    Log.d("HomeFragment", "Editing meal: ${meal.name}")
+                    Log.d("HomeFragment", "Old date: ${meal.date}, New date: $newDate")
                     lifecycleScope.launch {
                         val updatedMeal = meal.copy(
                             name = newName,
@@ -92,12 +148,17 @@ class HomeFragment : Fragment() {
                             time = newTime
                         )
                         db.mealDao().updateMeal(updatedMeal)
-                        setupUpcomingMeals() // Refresh the list
+                        loadMealsForSelectedDate() // Refresh the list
                     }
                 }
             )
             binding.rvUpcomingMeals.adapter = adapter
         }
+    }
+
+    private fun setupUpcomingMeals() {
+        binding.rvUpcomingMeals.layoutManager = LinearLayoutManager(context)
+        loadMealsForSelectedDate()
     }
 
     private fun setupButtons() {

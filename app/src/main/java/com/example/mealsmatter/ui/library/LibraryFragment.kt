@@ -98,10 +98,10 @@ class LibraryFragment : Fragment() {
     private fun parseDateTime(date: String, time: String): Long {
         val calendar = Calendar.getInstance()
         
-        // Parse date (MM/dd/yyyy)
+        // Parse date (dd/MM/yyyy)
         val dateParts = date.split("/")
-        val month = dateParts[0].toInt() - 1 // Calendar months are 0-based
-        val day = dateParts[1].toInt()
+        val day = dateParts[0].toInt()
+        val month = dateParts[1].toInt() - 1 // Calendar months are 0-based
         val year = dateParts[2].toInt()
         
         // Parse time (HH:mm)

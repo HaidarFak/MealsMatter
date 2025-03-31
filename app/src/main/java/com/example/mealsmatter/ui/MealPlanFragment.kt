@@ -137,12 +137,13 @@ class MealPlanFragment : Fragment() {
 
         val datePickerDialog = DatePickerDialog(
             requireContext(),
+            R.style.CustomDatePickerDialog,
             { _, selectedYear, selectedMonth, selectedDay ->
                 selectedCalendar.set(Calendar.YEAR, selectedYear)
                 selectedCalendar.set(Calendar.MONTH, selectedMonth)
                 selectedCalendar.set(Calendar.DAY_OF_MONTH, selectedDay)
                 
-                val selectedDate = "$selectedDay/${selectedMonth + 1}/$selectedYear"
+                val selectedDate = String.format("%02d/%02d/%d", selectedDay, selectedMonth + 1, selectedYear)
                 tvSelectedDate.text = selectedDate
             },
             year,
@@ -159,6 +160,7 @@ class MealPlanFragment : Fragment() {
 
         val timePickerDialog = TimePickerDialog(
             requireContext(),
+            R.style.CustomTimePickerDialog,
             { _, selectedHour, selectedMinute ->
                 selectedCalendar.set(Calendar.HOUR_OF_DAY, selectedHour)
                 selectedCalendar.set(Calendar.MINUTE, selectedMinute)

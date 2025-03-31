@@ -160,9 +160,10 @@ class RecipeAdapter(
         btnPickDate.setOnClickListener {
             DatePickerDialog(
                 view.context,
+                R.style.CustomDatePickerDialog,
                 { _, year, month, dayOfMonth ->
                     calendar.set(year, month, dayOfMonth)
-                    tvSelectedDate.text = String.format("%02d/%02d/%d", month + 1, dayOfMonth, year)
+                    tvSelectedDate.text = String.format("%02d/%02d/%d", dayOfMonth, month + 1, year)
                 },
                 calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH),
@@ -173,6 +174,7 @@ class RecipeAdapter(
         btnPickTime.setOnClickListener {
             TimePickerDialog(
                 view.context,
+                R.style.CustomTimePickerDialog,
                 { _, hourOfDay, minute ->
                     tvSelectedTime.text = String.format("%02d:%02d", hourOfDay, minute)
                 },

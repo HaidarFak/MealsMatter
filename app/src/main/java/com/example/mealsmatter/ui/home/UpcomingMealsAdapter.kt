@@ -107,7 +107,7 @@ class UpcomingMealsAdapter(
         val context = holder.itemView.context
         val calendar = Calendar.getInstance()
         
-        DatePickerDialog(context, { _, year, month, day ->
+        DatePickerDialog(context, R.style.CustomDatePickerDialog, { _, year, month, day ->
             val date = String.format("%02d/%02d/%d", day, month + 1, year)
             holder.editDateButton.text = date
         }, 
@@ -120,7 +120,7 @@ class UpcomingMealsAdapter(
         val context = holder.itemView.context
         val calendar = Calendar.getInstance()
         
-        TimePickerDialog(context, { _, hour, minute ->
+        TimePickerDialog(context, R.style.CustomTimePickerDialog, { _, hour, minute ->
             val time = String.format("%02d:%02d", hour, minute)
             holder.editTimeButton.text = time
         },
