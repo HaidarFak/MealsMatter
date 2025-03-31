@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Theme Colors for Dark Mode -->
+    <color name="primaryColor">#81C784</color>  <!-- Lighter Green -->
+    <color name="primaryDarkColor">#2E7D32</color>
+    <color name="primaryLightColor">#A5D6A7</color>
+    <color name="secondaryColor">#4DB6AC</color>
+    <color name="secondaryLightColor">#80CBC4</color>
+    <color name="secondaryDarkColor">#26A69A</color>
+    
+    <!-- Background Colors -->
+    <color name="backgroundColor">#121212</color>  <!-- Material Dark Background -->
+    <color name="surfaceColor">#1E1E1E</color>
+    <color name="onSurfaceColor">#FFFFFF</color>
+    
+    <!-- Text Colors -->
+    <color name="textPrimaryColor">#FFFFFF</color>
+    <color name="textSecondaryColor">#B3FFFFFF</color>  <!-- 70% white -->
+</resources>

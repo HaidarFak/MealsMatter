@@ -9,27 +9,11 @@
         android:id="@+id/navigation_home"
         android:name="com.example.mealsmatter.ui.home.HomeFragment"
         android:label="Home"
-        tools:layout="@layout/fragment_home" >
+        tools:layout="@layout/fragment_home">
         <action
-            android:id="@+id/action_navigation_home_to_navigation_dashboard"
-            app:destination="@id/navigation_dashboard" />
+            android:id="@+id/action_navigation_home_to_navigation_settings"
+            app:destination="@id/navigation_settings" />
     </fragment>
-
-    <fragment
-        android:id="@+id/navigation_dashboard"
-        android:name="com.example.mealsmatter.ui.dashboard.DashboardFragment"
-        android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" >
-        <action
-            android:id="@+id/action_navigation_dashboard_to_navigation_home"
-            app:destination="@id/navigation_home" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/navigation_notifications"
-        android:name="com.example.mealsmatter.ui.notifications.NotificationsFragment"
-        android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notifications" />
 
     <fragment
         android:id="@+id/navigation_meal_plan"
@@ -49,11 +33,31 @@
         android:label="Grocery List"
         tools:layout="@layout/fragment_grocery_list" />
 
-
     <fragment
         android:id="@+id/navigation_settings"
-        android:name="com.example.mealsmatter.ui.SettingsFragment"
+        android:name="com.example.mealsmatter.ui.settings.SettingsFragment"
         android:label="Settings"
-        tools:layout="@layout/fragment_settings" />
+        tools:layout="@layout/fragment_settings">
+        <action
+            android:id="@+id/action_navigation_settings_to_navigation_home"
+            app:destination="@id/navigation_home"
+            app:popUpTo="@id/navigation_home"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_navigation_settings_to_navigation_meal_plan"
+            app:destination="@id/navigation_meal_plan"
+            app:popUpTo="@id/navigation_home"
+            app:popUpToInclusive="false" />
+        <action
+            android:id="@+id/action_navigation_settings_to_navigation_library"
+            app:destination="@id/navigation_library"
+            app:popUpTo="@id/navigation_home"
+            app:popUpToInclusive="false" />
+        <action
+            android:id="@+id/action_navigation_settings_to_navigation_grocery"
+            app:destination="@id/navigation_grocery"
+            app:popUpTo="@id/navigation_home"
+            app:popUpToInclusive="false" />
+    </fragment>
 
 </navigation>

@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mealsmatter.R
 import com.example.mealsmatter.databinding.FragmentHomeBinding
-import com.example.mealsmatter.ui.home.UpcomingMeal
 import androidx.work.*
 import java.util.concurrent.TimeUnit
 import java.util.Calendar
@@ -26,223 +25,116 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.mealsmatter.utils.MealReminderWorker
 import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import com.example.mealsmatter.data.MealDatabase
 import com.example.mealsmatter.data.Meal
 import com.example.mealsmatter.api.FoodFactsApi
+import androidx.navigation.fragment.findNavController
 
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
-
-    // Declare views
-    private lateinit var tvGreeting: TextView
-    private lateinit var rvUpcomingMeals: RecyclerView
-    private lateinit var btnPlanMeal: Button
-    private lateinit var btnViewGroceryList: Button
-    private lateinit var tvDailyTip: TextView
-
-    private val PERMISSION_REQUEST_CODE = 123
     private lateinit var db: MealDatabase
+    private val PERMISSION_REQUEST_CODE = 123
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val homeViewModel =
-            ViewModelProvider(this).get(HomeViewModel::class.java)
-
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
-        val root: View = binding.root
-
-        // Initialize views
-
-        rvUpcomingMeals = root.findViewById(R.id.rv_upcoming_meals)
-        tvDailyTip = root.findViewById(R.id.tv_daily_tip)
-
-        // Set up RecyclerView for upcoming meals
-        rvUpcomingMeals.layoutManager = LinearLayoutManager(requireContext())
-        
-        val adapter = UpcomingMealsAdapter(
-            meals = emptyList(),
-            onMealClick = { meal ->
-                Toast.makeText(context, "Clicked: ${meal.name}", Toast.LENGTH_SHORT).show()
-            },
-            onDeleteClick = { meal ->
-                deleteMeal(meal)
-            },
-            onEditClick = { meal, newName, newDescription, newDate, newTime ->
-                updateMeal(meal, newName, newDescription, newDate, newTime)
-            }
-        )
-        rvUpcomingMeals.adapter = adapter
-
-        // Set daily tip
-        tvDailyTip.text = getDailyTip()
-
-        // Observe ViewModel data (if needed)
-        homeViewModel.text.observe(viewLifecycleOwner) {
-            // Update UI with ViewModel data
-        }
-
-        db = MealDatabase.getDatabase(requireContext())
-        
-        // Observe meals from database
-        lifecycleScope.launch {
-            db.mealDao().getAllMeals()
-                .collect { meals ->
-                    // Filter out recipes, only show planned meals
-                    val plannedMeals = meals.filter { !it.isRecipe }
-                    adapter.updateMeals(plannedMeals)
-                }
-        }
-
-        return root
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        
-        // Request notification permission if needed
-        requestNotificationPermission()
+        db = MealDatabase.getDatabase(requireContext())
+
+        setupGreeting()
+        setupUpcomingMeals()
+        setupButtons()
+        setupDailyTip()
+        checkNotificationPermission()
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    private fun setupGreeting() {
+        val calendar = Calendar.getInstance()
+        val greeting = when (calendar.get(Calendar.HOUR_OF_DAY)) {
+            in 0..11 -> "Good Morning"
+            in 12..16 -> "Good Afternoon"
+            else -> "Good Evening"
+        }
+        binding.tvGreeting.text = greeting
     }
 
-    // Helper function to get a daily tip
-    private fun getDailyTip(): String {
-        // Start with default tip
-        var tip = "Did you know? Eating breakfast boosts your metabolism!"
-        
-        // Launch a coroutine to fetch the tip
+    private fun setupUpcomingMeals() {
+        binding.rvUpcomingMeals.layoutManager = LinearLayoutManager(context)
         lifecycleScope.launch {
-            try {
-                val newTip = FoodFactsApi.getRandomFoodFact()
-                tvDailyTip.text = newTip
-            } catch (e: Exception) {
-                // Keep the default tip if there's an error
-            }
+            val meals = db.mealDao().getUpcomingMeals(System.currentTimeMillis())
+            val adapter = UpcomingMealsAdapter(
+                meals = meals,
+                onMealClick = { meal ->
+                    Toast.makeText(context, "Clicked: ${meal.name}", Toast.LENGTH_SHORT).show()
+                },
+                onDeleteClick = { meal ->
+                    lifecycleScope.launch {
+                        db.mealDao().deleteMeal(meal)
+                        setupUpcomingMeals() // Refresh the list
+                    }
+                },
+                onEditClick = { meal, newName, newDescription, newDate, newTime ->
+                    lifecycleScope.launch {
+                        val updatedMeal = meal.copy(
+                            name = newName,
+                            description = newDescription,
+                            date = newDate,
+                            time = newTime
+                        )
+                        db.mealDao().updateMeal(updatedMeal)
+                        setupUpcomingMeals() // Refresh the list
+                    }
+                }
+            )
+            binding.rvUpcomingMeals.adapter = adapter
         }
-        
-        return tip
     }
 
-    private fun scheduleMealReminder(mealName: String, calendar: Calendar) {
-        val currentTime = Calendar.getInstance()
-        val delayInMillis = calendar.timeInMillis - currentTime.timeInMillis
-        
-        if (delayInMillis <= 0) {
-            showToast("Please select a future date and time")
-            return
+    private fun setupButtons() {
+        binding.btnSettings.setOnClickListener {
+            findNavController().navigate(R.id.action_navigation_home_to_navigation_settings)
         }
-
-        // Create the input data for the worker
-        val inputData = Data.Builder()
-            .putString("meal_name", mealName)
-            .putString("meal_time", "${calendar.get(Calendar.HOUR_OF_DAY)}:${calendar.get(Calendar.MINUTE)}")
-            .build()
-
-        // Create the WorkRequest
-        val reminderRequest = OneTimeWorkRequestBuilder<MealReminderWorker>()
-            .setInitialDelay(delayInMillis, TimeUnit.MILLISECONDS)
-            .setInputData(inputData)
-            .build()
-
-        // Schedule the work
-        WorkManager.getInstance(requireContext())
-            .enqueue(reminderRequest)
-
-        showToast("Reminder set for $mealName")
     }
 
-    private fun showToast(message: String) {
-        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+    private fun setupDailyTip() {
+        val tips = listOf(
+            "Meal prepping can save you time and money!",
+            "Try to include a variety of colors in your meals for better nutrition.",
+            "Don't forget to stay hydrated throughout the day!",
+            "Including protein in your breakfast can help you feel fuller longer.",
+            "Try to eat mindfully and avoid distractions while eating."
+        )
+        binding.tvDailyTip.text = tips.random()
     }
 
-    private fun requestNotificationPermission() {
+    private fun checkNotificationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(
                     requireContext(),
-                    android.Manifest.permission.POST_NOTIFICATIONS
-                ) != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(
-                    arrayOf(android.Manifest.permission.POST_NOTIFICATIONS),
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                ActivityCompat.requestPermissions(
+                    requireActivity(),
+                    arrayOf(Manifest.permission.POST_NOTIFICATIONS),
                     PERMISSION_REQUEST_CODE
                 )
             }
         }
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        when (requestCode) {
-            PERMISSION_REQUEST_CODE -> {
-                if (grantResults.isNotEmpty() && 
-                    grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    showToast("Notification permission granted")
-                } else {
-                    showToast("Notification permission denied")
-                }
-            }
-            else -> super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        }
-    }
-
-    private fun deleteMeal(meal: Meal) {
-        lifecycleScope.launch {
-            try {
-                db.mealDao().deleteMeal(meal)
-                showToast("Meal deleted successfully")
-            } catch (e: Exception) {
-                showToast("Error deleting meal")
-            }
-        }
-    }
-
-    private fun updateMeal(meal: Meal, newName: String, newDescription: String, newDate: String, newTime: String) {
-        if (newName.isBlank()) {
-            showToast("Meal name cannot be empty")
-            return
-        }
-
-        lifecycleScope.launch {
-            try {
-                val updatedMeal = meal.copy(
-                    name = newName,
-                    description = newDescription,
-                    date = newDate,
-                    time = newTime,
-                    timestamp = calculateTimestamp(newDate, newTime)
-                )
-                db.mealDao().updateMeal(updatedMeal)
-                showToast("Meal updated successfully")
-            } catch (e: Exception) {
-                showToast("Error updating meal")
-            }
-        }
-    }
-
-    private fun calculateTimestamp(date: String, time: String): Long {
-        val (day, month, year) = date.split("/").map { it.toInt() }
-        val (hour, minute) = time.split(":").map { it.toInt() }
-        
-        return Calendar.getInstance().apply {
-            set(Calendar.YEAR, year)
-            set(Calendar.MONTH, month - 1) // Calendar months are 0-based
-            set(Calendar.DAY_OF_MONTH, day)
-            set(Calendar.HOUR_OF_DAY, hour)
-            set(Calendar.MINUTE, minute)
-            set(Calendar.SECOND, 0)
-            set(Calendar.MILLISECOND, 0)
-        }.timeInMillis
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
