@@ -21,4 +21,10 @@
         android:icon="@drawable/ic_grocery"
         android:title="Grocery List" />
 
+
+    <item
+        android:id="@+id/navigation_settings"
+        android:icon="@drawable/ic_settings"
+        android:title="Settings" />
+
 </menu>

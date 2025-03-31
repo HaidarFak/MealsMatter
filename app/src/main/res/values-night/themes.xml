@@ -1,30 +1,15 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Theme.MealsMatter" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/primaryColor</item>
-        <item name="colorPrimaryVariant">@color/primaryDark</item>
-        <item name="colorOnPrimary">@color/textColorLight</item>
+        <item name="colorPrimary">@color/purple_200</item>
+        <item name="colorPrimaryVariant">@color/purple_700</item>
+        <item name="colorOnPrimary">@color/black</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/accentColor</item>
-        <item name="colorSecondaryVariant">@color/accentColor</item>
-        <item name="colorOnSecondary">@color/textColorPrimary</item>
+        <item name="colorSecondary">@color/teal_200</item>
+        <item name="colorSecondaryVariant">@color/teal_200</item>
+        <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
-        <!-- Background colors -->
-        <item name="android:colorBackground">@color/backgroundColor</item>
-        <item name="colorSurface">@color/surfaceColor</item>
-        <item name="colorOnSurface">@color/textColorPrimary</item>
-        <!-- Text colors -->
-        <item name="android:textColorPrimary">@color/textColorPrimary</item>
-        <item name="android:textColorSecondary">@color/textColorSecondary</item>
-        <!-- Card colors -->
-        <item name="cardBackgroundColor">@color/cardBackground</item>
-        <!-- Divider color -->
-        <item name="android:divider">@color/dividerColor</item>
-        <!-- Error color -->
-        <item name="colorError">@color/errorColor</item>
-        <item name="colorOnError">@color/textColorLight</item>
     </style>
 </resources>

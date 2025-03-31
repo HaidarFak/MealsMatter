@@ -31,7 +31,6 @@ import kotlinx.coroutines.launch
 import com.example.mealsmatter.data.MealDatabase
 import com.example.mealsmatter.data.Meal
 import com.example.mealsmatter.api.FoodFactsApi
-import androidx.navigation.fragment.findNavController
 
 class HomeFragment : Fragment() {
 
@@ -60,13 +59,9 @@ class HomeFragment : Fragment() {
         val root: View = binding.root
 
         // Initialize views
+
         rvUpcomingMeals = root.findViewById(R.id.rv_upcoming_meals)
         tvDailyTip = root.findViewById(R.id.tv_daily_tip)
-
-        // Set up settings button click listener
-        root.findViewById<View>(R.id.btn_settings).setOnClickListener {
-            findNavController().navigate(R.id.action_navigation_home_to_navigation_settings)
-        }
 
         // Set up RecyclerView for upcoming meals
         rvUpcomingMeals.layoutManager = LinearLayoutManager(requireContext())
