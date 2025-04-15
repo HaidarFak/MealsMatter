@@ -11,7 +11,6 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -23,13 +22,13 @@ import com.example.mealsmatter.utils.MealReminderWorker
 import com.google.android.material.checkbox.MaterialCheckBox
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.textfield.TextInputEditText
-import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.launch
 
 class MealPlanFragment : Fragment() {
 
+    // UI references for meal and recipe inputs
     // Declare views
     private lateinit var etMealName: TextInputEditText
     private lateinit var btnPickDate: Button

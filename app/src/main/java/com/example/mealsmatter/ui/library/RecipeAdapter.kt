@@ -16,12 +16,12 @@ import java.util.*
 
 class RecipeAdapter(
     private var recipes: List<Meal>,
-    private val onDeleteClick: (Meal) -> Unit,
-    private val onScheduleRecipe: (Meal, String, String) -> Unit,
-    private val onUpdateRecipe: (Meal) -> Unit
+    private val onDeleteClick: (Meal) -> Unit, // Callback to delete a recipe
+    private val onScheduleRecipe: (Meal, String, String) -> Unit, // Callback to reuse recipe
+    private val onUpdateRecipe: (Meal) -> Unit // Callback to save edited recipe
 ) : RecyclerView.Adapter<RecipeAdapter.ViewHolder>() {
 
-    private var expandedPosition = -1
+    private var expandedPosition = -1 // Tracks which recipe is expanded
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         // View mode views
@@ -32,7 +32,7 @@ class RecipeAdapter(
         val ingredients: TextView = view.findViewById(R.id.tv_ingredients)
         val instructions: TextView = view.findViewById(R.id.tv_instructions)
         
-        // Edit mode views
+        // Edit input fields
         val etRecipeName: TextInputEditText = view.findViewById(R.id.et_recipe_name)
         val etDescription: TextInputEditText = view.findViewById(R.id.et_recipe_description)
         val etCookingTime: TextInputEditText = view.findViewById(R.id.et_cooking_time)
@@ -64,7 +64,7 @@ class RecipeAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val recipe = recipes[position]
         
-        // Set up view mode content
+        // Display recipe details
         holder.recipeName.text = recipe.name
         holder.cookingTime.text = "${recipe.cookingTime} minutes"
         holder.servings.text = "${recipe.servings} servings"
@@ -72,7 +72,7 @@ class RecipeAdapter(
         holder.ingredients.text = recipe.ingredients
         holder.instructions.text = recipe.instructions
 
-        // Handle expanded state
+        // Show/hide expanded details
         val isExpanded = position == expandedPosition
         holder.recipeDetails.visibility = if (isExpanded) View.VISIBLE else View.GONE
 
@@ -144,6 +144,7 @@ class RecipeAdapter(
         }
     }
 
+    // Dialog for selecting date and time to reuse/schedule for the recipe
     private fun showScheduleDialog(view: View, recipe: Meal) {
         val dialog = Dialog(view.context)
         dialog.setContentView(R.layout.dialog_schedule_recipe)
@@ -204,6 +205,7 @@ class RecipeAdapter(
 
     override fun getItemCount() = recipes.size
 
+    // Replaces recipe list and refreshes the view
     fun updateRecipes(newRecipes: List<Meal>) {
         recipes = newRecipes
         notifyDataSetChanged()

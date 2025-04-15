@@ -12,9 +12,9 @@ import com.example.mealsmatter.data.GroceryItem
 import com.example.mealsmatter.data.MealDatabase
 import com.example.mealsmatter.databinding.FragmentGroceryListBinding
 import com.example.mealsmatter.R
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
+// Fragment to display and manage the grocery list screen
 class GroceryListFragment : Fragment() {
 
     private var _binding: FragmentGroceryListBinding? = null
@@ -37,6 +37,7 @@ class GroceryListFragment : Fragment() {
 
         db = MealDatabase.getDatabase(requireContext())
 
+        // Initialize the RecyclerView adapter with item interaction callbacks
         adapter = GroceryListAdapter(
             items = mutableListOf(),
             onEditClick = { item -> showEditItemDialog(item) },
@@ -44,9 +45,11 @@ class GroceryListFragment : Fragment() {
             onCheckChanged = { item, isChecked -> updateItemChecked(item, isChecked) }
         )
 
+        // Set up RecyclerView with vertical layout
         binding.rvGroceryList.layoutManager = LinearLayoutManager(requireContext())
         binding.rvGroceryList.adapter = adapter
 
+        // Show dialog to add new grocery item
         binding.fabAddItem.setOnClickListener {
             showAddItemDialog()
         }
@@ -59,6 +62,7 @@ class GroceryListFragment : Fragment() {
         }
     }
 
+    // Show dialog to input and save new grocery item
     private fun showAddItemDialog() {
         val dialogView = LayoutInflater.from(requireContext())
             .inflate(R.layout.dialog_add_grocery_item, null)
@@ -87,6 +91,7 @@ class GroceryListFragment : Fragment() {
         dialog.show()
     }
 
+    // Show dialog to edit an existing grocery item
     private fun showEditItemDialog(item: GroceryItem) {
         val dialogView = LayoutInflater.from(requireContext())
             .inflate(R.layout.dialog_add_grocery_item, null)
@@ -119,6 +124,7 @@ class GroceryListFragment : Fragment() {
         dialog.show()
     }
 
+    // Delete item from database and confirmation
     private fun deleteItem(item: GroceryItem) {
         lifecycleScope.launch {
             db.groceryItemDao().deleteItem(item)
@@ -126,12 +132,14 @@ class GroceryListFragment : Fragment() {
         }
     }
 
+    // Update checkbox state (checked/unchecked)
     private fun updateItemChecked(item: GroceryItem, isChecked: Boolean) {
         lifecycleScope.launch {
             db.groceryItemDao().updateItem(item.copy(isChecked = isChecked))
         }
     }
 
+    // Clear view binding for avoiding memory leaks
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

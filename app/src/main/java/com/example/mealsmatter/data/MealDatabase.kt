@@ -7,15 +7,20 @@ import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 
+// Room database definition including Meal and GroceryItem entities
 @Database(entities = [Meal::class, GroceryItem::class], version = 3)
 abstract class MealDatabase : RoomDatabase() {
+    // Access point for meal-related database operations
     abstract fun mealDao(): MealDao
+    // Access point for grocery item-related operations
     abstract fun groceryItemDao(): GroceryItemDao
 
     companion object {
+        // Singleton instance to prevent multiple database connections
         @Volatile
         private var INSTANCE: MealDatabase? = null
 
+        // Migration from version 1 to 2: Adds grocery_items table
         private val MIGRATION_1_2 = object : Migration(1, 2) {
             override fun migrate(database: SupportSQLiteDatabase) {
                 // Create the grocery_items table
@@ -30,6 +35,7 @@ abstract class MealDatabase : RoomDatabase() {
             }
         }
 
+        // Migration from version 2 to 3: Recreates grocery_items for schema consistency
         private val MIGRATION_2_3 = object : Migration(2, 3) {
             override fun migrate(database: SupportSQLiteDatabase) {
                 // Add any new columns or modifications for version 3
@@ -46,6 +52,7 @@ abstract class MealDatabase : RoomDatabase() {
             }
         }
 
+        // Returns the single instance of the database
         fun getDatabase(context: Context): MealDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
@@ -53,7 +60,9 @@ abstract class MealDatabase : RoomDatabase() {
                     MealDatabase::class.java,
                     "meal_database"
                 )
+                 // Adds support for migration
                 .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
+                // Falls back to wiping the database if migration fails
                 .fallbackToDestructiveMigration()
                 .build()
                 INSTANCE = instance

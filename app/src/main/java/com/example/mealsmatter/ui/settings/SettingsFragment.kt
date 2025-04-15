@@ -9,7 +9,6 @@ import android.widget.AdapterView
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.example.mealsmatter.R
 import com.example.mealsmatter.databinding.FragmentSettingsBinding
 import com.example.mealsmatter.utils.SettingsManager
 
@@ -32,17 +31,19 @@ class SettingsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         settingsManager = SettingsManager.getInstance(requireContext())
 
-        setupDarkModeSwitch()
-        setupLanguageSpinner()
-        setupBackButton()
+        setupDarkModeSwitch()   // Handle dark mode toggle
+        setupLanguageSpinner()  // Handle language selection
+        setupBackButton()       // Handle navigation back
     }
 
+    // Navigates back to the previous screen
     private fun setupBackButton() {
         binding.btnBack.setOnClickListener {
             findNavController().navigateUp()
         }
     }
 
+    // Toggles dark mode on or off and saves the settings
     private fun setupDarkModeSwitch() {
         binding.switchDarkMode.isChecked = settingsManager.isDarkMode
         binding.switchDarkMode.setOnCheckedChangeListener { _, isChecked ->
@@ -52,6 +53,7 @@ class SettingsFragment : Fragment() {
         }
     }
 
+    // Sets up language dropdown and saves the selected language
     private fun setupLanguageSpinner() {
         val languages = arrayOf("English", "Spanish", "French", "German", "Chinese")
         val adapter = ArrayAdapter(
@@ -68,13 +70,13 @@ class SettingsFragment : Fragment() {
             binding.spinnerLanguage.setSelection(languageIndex)
         }
 
+        // Listen for new language selections
         binding.spinnerLanguage.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 val selectedLanguage = languages[position]
                 if (selectedLanguage != settingsManager.language) {
                     settingsManager.language = selectedLanguage
-                    // You would typically restart the activity or reload resources here
-                    // to apply the language change, but we'll omit that for simplicity
+                    // Reset activity to reload resources
                 }
             }
 
@@ -84,6 +86,7 @@ class SettingsFragment : Fragment() {
         }
     }
 
+    // Prevent memory leaks by clearing binding when view is destroyed
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

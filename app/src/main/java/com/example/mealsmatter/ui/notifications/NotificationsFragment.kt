@@ -11,10 +11,8 @@ import com.example.mealsmatter.databinding.FragmentNotificationsBinding
 
 class NotificationsFragment : Fragment() {
 
+    // ViewBinding to access layout views safely
     private var _binding: FragmentNotificationsBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -22,12 +20,15 @@ class NotificationsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        // Get the associated ViewModel
         val notificationsViewModel =
             ViewModelProvider(this).get(NotificationsViewModel::class.java)
 
+        // Inflate the layout using binding
         _binding = FragmentNotificationsBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
+        // Observe the LiveData text and set it to the TextView
         val textView: TextView = binding.textNotifications
         notificationsViewModel.text.observe(viewLifecycleOwner) {
             textView.text = it
@@ -35,6 +36,7 @@ class NotificationsFragment : Fragment() {
         return root
     }
 
+    // Clear binding reference to avoid memory leaks
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

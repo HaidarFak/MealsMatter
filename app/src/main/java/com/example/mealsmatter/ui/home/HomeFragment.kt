@@ -5,29 +5,20 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.mealsmatter.R
 import com.example.mealsmatter.databinding.FragmentHomeBinding
-import androidx.work.*
-import java.util.concurrent.TimeUnit
 import java.util.Calendar
 import android.app.DatePickerDialog
-import android.app.TimePickerDialog
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Build
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.example.mealsmatter.utils.MealReminderWorker
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import com.example.mealsmatter.data.MealDatabase
-import com.example.mealsmatter.data.Meal
 import com.example.mealsmatter.api.FoodFactsApi
 import androidx.navigation.fragment.findNavController
 import java.text.SimpleDateFormat
@@ -57,13 +48,14 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         db = MealDatabase.getDatabase(requireContext())
 
-        setupUpcomingMeals()
-        setupButtons()
-        setupDailyTip()
-        checkNotificationPermission()
-        setupCalendarButton()
+        setupUpcomingMeals()    // Setup RecyclerView For Meals
+        setupButtons()          // Setup settings button
+        setupDailyTip()         // Show random wellness tip
+        checkNotificationPermission() // Ask notification permissions
+        setupCalendarButton()   // Calender date picker setup
     }
 
+    // Handles calendar selection and date clearing
     private fun setupCalendarButton() {
         binding.btnCalendar.setOnClickListener {
             showDatePicker()
@@ -77,6 +69,7 @@ class HomeFragment : Fragment() {
         }
     }
 
+    // Opens date picker and filer meals based on date selection
     private fun showDatePicker() {
         val calendar = Calendar.getInstance()
         val year = calendar.get(Calendar.YEAR)
@@ -99,9 +92,11 @@ class HomeFragment : Fragment() {
         ).show()
     }
 
+    // Loads meals by selected date
     private fun loadMealsForSelectedDate() {
         lifecycleScope.launch {
             val meals = if (selectedDate != null) {
+                // Handle alternative date formats
                 Log.d("HomeFragment", "Selected date: $selectedDate")
                 // Create alternative date format (single digit day)
                 val dateParts = selectedDate!!.split("/")
@@ -125,7 +120,8 @@ class HomeFragment : Fragment() {
                 }
                 upcomingMeals
             }
-            
+
+            // Adapter for displaying and handling meal actions
             val adapter = UpcomingMealsAdapter(
                 meals = meals,
                 onMealClick = { meal ->
@@ -156,17 +152,20 @@ class HomeFragment : Fragment() {
         }
     }
 
+    // Set up RecyclerView layout
     private fun setupUpcomingMeals() {
         binding.rvUpcomingMeals.layoutManager = LinearLayoutManager(context)
         loadMealsForSelectedDate()
     }
 
+    // Handles navigation to the settings screen
     private fun setupButtons() {
         binding.btnSettings.setOnClickListener {
             findNavController().navigate(R.id.action_navigation_home_to_navigation_settings)
         }
     }
 
+    // Displays a random tip on the home screen
     private fun setupDailyTip() {
         val tips = listOf(
             "Meal prepping can save you time and money!",
@@ -178,6 +177,7 @@ class HomeFragment : Fragment() {
         binding.tvDailyTip.text = tips.random()
     }
 
+    // Request notification permissions on Android 13 and above
     private fun checkNotificationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(
@@ -193,7 +193,7 @@ class HomeFragment : Fragment() {
             }
         }
     }
-
+    // Clean up view binding to prevent memory leaks
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

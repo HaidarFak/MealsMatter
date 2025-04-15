@@ -1,3 +1,6 @@
+
+<!-- Card layout for displaying a scheduled meal with name and time. -->
+
 <com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"

@@ -31,7 +31,7 @@ class LibraryFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_library, container, false)
 
-        // Initialize views
+        // Initialize UI components
         rvRecipes = view.findViewById(R.id.rv_recipes)
         tvEmptyLibrary = view.findViewById(R.id.tv_empty_library)
 
@@ -41,15 +41,21 @@ class LibraryFragment : Fragment() {
         // Set up RecyclerView
         adapter = RecipeAdapter(
             recipes = emptyList(),
+
+            // Delete a recipe from the databse
             onDeleteClick = { meal ->
                 lifecycleScope.launch {
                     db.mealDao().deleteMeal(meal)
                     Toast.makeText(context, "Recipe deleted", Toast.LENGTH_SHORT).show()
                 }
             },
+
+            // Schedule a recipe for a future meal
             onScheduleRecipe = { recipe, date, time ->
                 scheduleRecipe(recipe, date, time)
             },
+
+            // Update recipe details
             onUpdateRecipe = { updatedRecipe ->
                 lifecycleScope.launch {
                     db.mealDao().updateMeal(updatedRecipe)
@@ -58,15 +64,17 @@ class LibraryFragment : Fragment() {
             }
         )
 
+        // Attach adapter and layout manager to the RecyclerView
         rvRecipes.layoutManager = LinearLayoutManager(context)
         rvRecipes.adapter = adapter
 
-        // Observe recipes
+        // Observe all meals and filter out only saved recipes
         lifecycleScope.launch {
             db.mealDao().getAllMeals()
                 .map { meals -> meals.filter { it.isRecipe } }
                 .collect { recipes ->
                     adapter.updateRecipes(recipes)
+                    // Show message if no recipes exist
                     tvEmptyLibrary.visibility = if (recipes.isEmpty()) View.VISIBLE else View.GONE
                 }
         }
@@ -74,6 +82,7 @@ class LibraryFragment : Fragment() {
         return view
     }
 
+    // Creates a meal entry from a recipe to schedule it on a calender date/time
     private fun scheduleRecipe(recipe: Meal, date: String, time: String) {
         lifecycleScope.launch {
             // Create a new meal from the recipe
@@ -82,7 +91,7 @@ class LibraryFragment : Fragment() {
                 description = recipe.description,
                 date = date,
                 time = time,
-                timestamp = parseDateTime(date, time),
+                timestamp = parseDateTime(date, time), // Converts to milliseconds
                 isRecipe = false, // This is a scheduled meal, not a recipe
                 ingredients = recipe.ingredients,
                 cookingTime = recipe.cookingTime,
@@ -95,6 +104,7 @@ class LibraryFragment : Fragment() {
         }
     }
 
+    // Converts date and time strings to a UNIX timestamp for sorting/saving
     private fun parseDateTime(date: String, time: String): Long {
         val calendar = Calendar.getInstance()
         

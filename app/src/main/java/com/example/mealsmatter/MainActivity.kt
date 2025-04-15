@@ -5,10 +5,8 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.navigation.NavController
-import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupWithNavController
 import com.example.mealsmatter.databinding.ActivityMainBinding
 import com.example.mealsmatter.utils.LocaleHelper
 import com.example.mealsmatter.utils.SettingsManager
@@ -21,6 +19,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var settingsManager: SettingsManager
     private lateinit var navController: NavController
 
+    // Ensures locale is applied before UI loads
     override fun attachBaseContext(newBase: Context?) {
         settingsManager = SettingsManager.getInstance(newBase!!)
         val contextWithLocale = LocaleHelper.applyLocale(newBase, settingsManager.language)
@@ -40,6 +39,7 @@ class MainActivity : AppCompatActivity() {
         val navView: BottomNavigationView = binding.navView
         navController = findNavController(R.id.nav_host_fragment_activity_main)
 
+        // Define top-level destinations for the app bar config
         val appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.navigation_home,
