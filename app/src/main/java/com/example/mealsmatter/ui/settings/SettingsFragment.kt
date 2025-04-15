@@ -33,6 +33,7 @@ class SettingsFragment : Fragment() {
 
         setupDarkModeSwitch()   // Handle dark mode toggle
         setupLanguageSpinner()  // Handle language selection
+        setupNotificationsSwitch() // Handle notifications toggle
         setupBackButton()       // Handle navigation back
     }
 
@@ -82,6 +83,18 @@ class SettingsFragment : Fragment() {
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
                 // Nothing to do
+            }
+        }
+    }
+
+    // Toggles notifications on or off and saves the setting
+    private fun setupNotificationsSwitch() {
+        binding.switchNotifications.isChecked = settingsManager.notificationsEnabled
+        binding.switchNotifications.setOnCheckedChangeListener { _, isChecked ->
+            settingsManager.notificationsEnabled = isChecked
+            if (!isChecked) {
+                // Cancel all pending notifications when disabled
+                androidx.work.WorkManager.getInstance(requireContext()).cancelAllWork()
             }
         }
     }

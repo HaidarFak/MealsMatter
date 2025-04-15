@@ -137,6 +137,57 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
 
+    <!-- Notifications Setting -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/notifications_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="4dp"
+        app:strokeWidth="1dp"
+        app:strokeColor="#E0E0E0"
+        app:layout_constraintTop_toBottomOf="@id/language_card">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/notifications_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Meal Reminders"
+                android:textColor="@color/textColorPrimary"
+                android:textSize="18sp"
+                android:fontFamily="sans-serif-medium"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/switch_notifications"/>
+
+            <TextView
+                android:id="@+id/notifications_description"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Receive notifications for upcoming meals"
+                android:textColor="@color/textColorSecondary"
+                android:textSize="14sp"
+                android:layout_marginTop="4dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/notifications_title"
+                app:layout_constraintEnd_toStartOf="@id/switch_notifications"/>
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/switch_notifications"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+
     <TextView
         android:id="@+id/app_version"
         android:layout_width="wrap_content"

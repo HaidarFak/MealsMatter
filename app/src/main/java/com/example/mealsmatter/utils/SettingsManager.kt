@@ -18,10 +18,16 @@ class SettingsManager private constructor(context: Context) {
         get() = prefs.getString(KEY_LANGUAGE, DEFAULT_LANGUAGE) ?: DEFAULT_LANGUAGE
         set(value) = prefs.edit().putString(KEY_LANGUAGE, value).apply()
 
+    // Notification setting
+    var notificationsEnabled: Boolean
+        get() = prefs.getBoolean(KEY_NOTIFICATIONS, true)
+        set(value) = prefs.edit().putBoolean(KEY_NOTIFICATIONS, value).apply()
+
     companion object {
         private const val PREFS_NAME = "MealReminders"
         private const val KEY_DARK_MODE = "dark_mode"
         private const val KEY_LANGUAGE = "language"
+        private const val KEY_NOTIFICATIONS = "notifications_enabled"
         private const val DEFAULT_LANGUAGE = "en"
         
         @Volatile

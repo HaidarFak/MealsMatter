@@ -17,10 +17,20 @@ class MealReminderWorker(
 
     // Called when work executes
     override fun doWork(): Result {
-        val mealName = inputData.getString("meal_name") ?: return Result.failure()
-        val mealTime = inputData.getString("meal_time") ?: return Result.failure()
+        // Check if notifications are enabled
+        if (!SettingsManager.getInstance(applicationContext).notificationsEnabled) {
+            return Result.success()
+        }
 
-        showNotification(mealName, mealTime) // Display notification
+        val mealName = inputData.getString(KEY_MEAL_NAME) ?: return Result.failure()
+        val mealTime = inputData.getString(KEY_MEAL_TIME) ?: return Result.failure()
+
+        NotificationHelper.showNotification(
+            applicationContext,
+            mealName,
+            mealTime
+        )
+
         return Result.success()
     }
 
@@ -53,5 +63,7 @@ class MealReminderWorker(
     companion object {
         private const val CHANNEL_ID = "MEAL_REMINDER_CHANNEL" // Unique ID for channel
         private const val NOTIFICATION_ID = 1 // ID used to post the notification
+        const val KEY_MEAL_NAME = "meal_name"
+        const val KEY_MEAL_TIME = "meal_time"
     }
 } 

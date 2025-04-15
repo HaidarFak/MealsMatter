@@ -2,50 +2,54 @@ package com.example.mealsmatter.utils
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
+import com.example.mealsmatter.MainActivity
 import com.example.mealsmatter.R
 
 // Utility class for displaying notifications
-class NotificationHelper(private val context: Context) {
-    companion object {
-        const val CHANNEL_ID = "meal_reminder_channel" // Unique channel ID
-        const val CHANNEL_NAME = "Meal Reminders"      // Channel name visible to users
-        const val NOTIFICATION_ID = 1                  // Static notification ID
-    }
+object NotificationHelper {
+    private const val CHANNEL_ID = "MEAL_REMINDER_CHANNEL"
+    private const val NOTIFICATION_ID = 1
 
-    // Create the notifications channel as soon as this helper is instantiated
-    init {
-        createNotificationChannel()
-    }
+    fun showNotification(context: Context, mealName: String, mealTime: String) {
+        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-    // Sets up the channel
-    private fun createNotificationChannel() {
+        // Create notification channel for Android O and above
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 CHANNEL_ID,
-                CHANNEL_NAME,
+                "Meal Reminders",
                 NotificationManager.IMPORTANCE_DEFAULT
             ).apply {
-                description = "Channel for meal reminder notifications"
+                description = "Notifications for meal reminders"
             }
-            
-            val notificationManager = context.getSystemService(NotificationManager::class.java)
             notificationManager.createNotificationChannel(channel)
         }
-    }
 
-    // Builds and displays the meal reminder notification
-    fun showNotification(mealName: String, time: String) {
-        val builder = NotificationCompat.Builder(context, CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_notification) // App icon
+        // Create intent for when notification is tapped
+        val intent = Intent(context, MainActivity::class.java)
+        val pendingIntent = PendingIntent.getActivity(
+            context,
+            0,
+            intent,
+            PendingIntent.FLAG_IMMUTABLE
+        )
+
+        // Build notification
+        val notification = NotificationCompat.Builder(context, CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle("Meal Reminder")
-            .setContentText("Time for $mealName at $time")
+            .setContentText("Time for $mealName at $mealTime")
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .setAutoCancel(true) // Dismiss when tapped
+            .setAutoCancel(true)
+            .setContentIntent(pendingIntent)
+            .build()
 
-        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.notify(NOTIFICATION_ID, builder.build())
+        // Show notification
+        notificationManager.notify(NOTIFICATION_ID, notification)
     }
 } 
