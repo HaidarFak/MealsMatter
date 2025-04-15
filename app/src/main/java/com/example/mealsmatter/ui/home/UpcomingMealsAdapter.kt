@@ -2,6 +2,7 @@ package com.example.mealsmatter.ui.home
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,6 +24,7 @@ class UpcomingMealsAdapter(
 
     // Tracks the position of the item currently being edited
     private var editingPosition = -1
+    private var expandedPosition = -1 // Track which meal is expanded
 
     // ViewHolder holds references to both viewing and editing views
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -58,8 +60,16 @@ class UpcomingMealsAdapter(
         holder.mealTime.text = "${meal.date} at ${meal.time}"
         holder.mealDescription.text = meal.description
 
+        // Handle expansion state
+        val isExpanded = position == expandedPosition
+        holder.mealDescription.maxLines = if (isExpanded) Int.MAX_VALUE else 2
+        holder.mealDescription.ellipsize = if (isExpanded) null else TextUtils.TruncateAt.END
+
         // Set up click listeners
-        holder.itemView.setOnClickListener { onMealClick(meal) }
+        holder.itemView.setOnClickListener { 
+            expandedPosition = if (isExpanded) -1 else position
+            notifyItemChanged(position)
+        }
         holder.deleteButton.setOnClickListener { onDeleteClick(meal) }
 
         // Handle edit mode
